@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36221.1 d17.14
+VisualStudioVersion = 17.14.36221.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{1B3AD2F2-C35C-4B44-B9CF-65AC63B3D1BE}"
 EndProject
@@ -10,6 +10,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{80DB5927-849C-4436-95D0-956666920CB9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{B0F9BCD1-2FFE-4FD7-8574-BE0899138F85}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F8E888B5-E087-477C-AB2E-D8E9BC2AD06B} = {F8E888B5-E087-477C-AB2E-D8E9BC2AD06B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Importer", "Importer\Importer.csproj", "{6414B154-CEF6-4C5C-B2CD-A309C09D0DD9}"
 EndProject
