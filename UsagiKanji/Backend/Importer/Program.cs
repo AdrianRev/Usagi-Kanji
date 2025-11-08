@@ -33,7 +33,7 @@ namespace Importer
             var vocabImporter = new VocabularyImporterService(context);
             await vocabImporter.ImportVocabularyJsonAsync(Path.Combine(AppContext.BaseDirectory, "Data", "vocabulary.json"));
 
-            // Step 2: Assign Readings
+            // Step 3: Assign Readings
             var readingService = new VocabularyReadingSplitterService(context);
             await readingService.AssignReadingsAsync();
 

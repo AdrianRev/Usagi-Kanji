@@ -1,24 +1,28 @@
+using Application.Dtos;
+using Application.Interfaces;
+using Application.Services;
+using Domain.Repositories;
+using FluentValidation;
 using Infrastructure;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using WebApi.Validators;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 
-// Configure EF Core
+builder.Services.AddScoped<IKanjiService, KanjiService>();
+builder.Services.AddScoped<IKanjiRepository, KanjiRepository>();
+
+builder.Services.AddScoped<IValidator<KanjiListParams>, KanjiListValidator>();
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Build app
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

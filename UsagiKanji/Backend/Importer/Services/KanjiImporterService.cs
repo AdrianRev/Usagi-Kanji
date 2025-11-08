@@ -66,13 +66,16 @@ namespace Importer.Services
                         }
 
                         // Add meanings
+                        bool isFirst = true;
                         foreach (var meaning in group.Meanings.Where(m => m.Lang == "en"))
                         {
                             kanji.Meanings.Add(new Meaning
                             {
                                 Language = meaning.Lang,
-                                Value = meaning.Value
+                                Value = meaning.Value,
+                                IsPrimary = isFirst
                             });
+                            isFirst = false;
                         }
                     }
                 }
