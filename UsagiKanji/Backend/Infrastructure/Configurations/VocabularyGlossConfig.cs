@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations
 {
-    public class VocabularyGlossConfig : IEntityTypeConfiguration<VocabularyGloss>
+    internal class VocabularyGlossConfig : IEntityTypeConfiguration<VocabularyGloss>
     {
         public void Configure(EntityTypeBuilder<VocabularyGloss> builder)
         {

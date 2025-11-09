@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations
 {
-    public class VocabularyKanaConfig : IEntityTypeConfiguration<VocabularyKana>
+    internal class VocabularyKanaConfig : IEntityTypeConfiguration<VocabularyKana>
     {
         public void Configure(EntityTypeBuilder<VocabularyKana> builder)
         {

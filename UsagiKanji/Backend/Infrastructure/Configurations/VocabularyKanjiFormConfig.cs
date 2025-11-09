@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations
 {
-    public class VocabularyKanjiFormConfig : IEntityTypeConfiguration<VocabularyKanjiForm>
+    internal class VocabularyKanjiFormConfig : IEntityTypeConfiguration<VocabularyKanjiForm>
     {
         public void Configure(EntityTypeBuilder<VocabularyKanjiForm> builder)
         {

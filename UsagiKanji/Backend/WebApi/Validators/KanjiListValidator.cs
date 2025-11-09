@@ -15,9 +15,6 @@ public class KanjiListValidator : AbstractValidator<KanjiListParams>
                 .Must(IsAValidSortOption)
                 .When(x => !string.IsNullOrWhiteSpace(x.SortBy))
                 .WithMessage("Invalid sort field.");
-        RuleFor(x => x)
-                .Must(x => x.PageIndex <= x.TotalPages || x.TotalPages == 0)
-                .WithMessage("PageIndex cannot exceed TotalPages.");
     }
     private bool IsAValidSortOption(string sortBy)
     {
