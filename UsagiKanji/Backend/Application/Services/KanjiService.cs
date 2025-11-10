@@ -1,5 +1,6 @@
 ﻿using Application.Dtos;
 using Application.Interfaces;
+using Domain.Entities;
 using Domain.Repositories;
 using Domain.Utilities;
 using FluentResults;
@@ -40,7 +41,8 @@ namespace Application.Services
             var kanji = await _kanjiRepository.GetKanjiWithUserDetailsAsync(kanjiId, userId);
             if (kanji == null) return null;
 
-            var userKanji = kanji.UserKanjis?.FirstOrDefault();
+            // Filter UserKanjis by userId
+            var userKanji = kanji.UserKanjis?.FirstOrDefault(uk => uk.UserId == userId);
 
             var vocabularies = kanji.VocabularyKanjiCharacters?
                 .Select(vkc => vkc.KanjiForm?.Vocabulary)
@@ -77,15 +79,47 @@ namespace Application.Services
                 Vocabulary = vocabularies.Select(v =>
                 {
                     var mainForm = v?.KanjiForms?.FirstOrDefault();
+                    var kanaReadings = v?.KanaReadings?
+                        .Where(k => (k.AppliesToKanji == "*" || k.AppliesToKanji.Contains(kanji.Character))
+                            && k.Common)
+                        .Select(k => k.Text)
+                        .ToList() ?? new List<string>();
                     return new VocabularyDto
                     {
                         Text = mainForm?.Text ?? string.Empty,
                         Common = mainForm?.Common ?? false,
-                        KanaReadings = v?.KanaReadings?.Select(k => k.Text).ToList() ?? new List<string>(),
+                        KanaReadings = kanaReadings,
                         Glosses = v?.Glosses?.Select(g => g.Text).ToList() ?? new List<string>()
                     };
                 }).ToList()
             };
         }
+
+        public async Task<Result> UpdateOrAddUserKanjiAsync(Guid kanjiId, Guid userId, UpdateOrAddUserKanjiDto dto)
+        {
+            var userKanji = await _kanjiRepository.GetUserKanjiAsync(userId, kanjiId);
+
+            if (userKanji == null)
+            {
+                userKanji = new UserKanji
+                {
+                    KanjiId = kanjiId,
+                    UserId = userId,
+                    Notes = dto.Notes,
+                    Keyword = dto.Keyword
+                };
+                await _kanjiRepository.AddAsync(userKanji);
+            }
+            else
+            {
+                userKanji.Notes = dto.Notes;
+                userKanji.Keyword = dto.Keyword;
+                await _kanjiRepository.UpdateAsync(userKanji);
+            }
+
+            await _kanjiRepository.SaveChangesAsync();
+            return Result.Ok();
+        }
+
     }
 }

@@ -8,7 +8,7 @@ namespace Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<UserKanji> builder)
         {
-            builder.HasKey(uk => uk.Id);
+            builder.HasKey(uk => new { uk.UserId, uk.KanjiId });
 
             builder.HasOne(uk => uk.User)
                    .WithMany(u => u.UserKanjis)

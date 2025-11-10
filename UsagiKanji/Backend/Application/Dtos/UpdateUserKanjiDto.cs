@@ -1,6 +1,6 @@
 ﻿namespace Application.Dtos
 {
-    public class UpdateUserKanjiDto
+    public class UpdateOrAddUserKanjiDto
     {
         public string? Notes { get; set; }
         public string? Keyword { get; set; }

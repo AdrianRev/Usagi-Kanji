@@ -8,6 +8,6 @@ namespace Application.Interfaces
     {
         Task<Result<PaginatedList<KanjiListItemDto>>> GetAllKanjiAsync(KanjiListParams parameters, CancellationToken cancellationToken = default);
         Task<KanjiDetailsDto?> GetKanjiByIdAsync(Guid kanjiId, Guid userId);
-        //Task<bool> UpdateUserKanjiAsync(Guid kanjiId, Guid userId, UpdateUserKanjiDto dto);
+        Task<Result> UpdateOrAddUserKanjiAsync(Guid kanjiId, Guid userId, UpdateOrAddUserKanjiDto dto);
     }
 }

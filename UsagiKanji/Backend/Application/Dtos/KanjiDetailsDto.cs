@@ -29,18 +29,10 @@
         public string Value { get; set; } = string.Empty;
         public bool IsPrimary { get; set; }
     }
-
-    public class VocabularyKanjiCharacterDto
-    {
-        public string Character { get; set; } = string.Empty;
-        public string? Reading { get; set; }
-    }
-
     public class VocabularyDto
     {
         public string Text { get; set; } = string.Empty;
         public bool Common { get; set; }
-        public ICollection<VocabularyKanjiCharacterDto> KanjiCharacters { get; set; } = new List<VocabularyKanjiCharacterDto>();
         public List<string> KanaReadings { get; set; } = new();
         public List<string> Glosses { get; set; } = new();
     }

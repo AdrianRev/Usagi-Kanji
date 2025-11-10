@@ -69,6 +69,15 @@ namespace WebAPI.Controllers
             return Ok(kanjiDto);
         }
 
+        [HttpPost("{kanjiId}/user/{userId}")]
+        public async Task<IActionResult> AddOrUpdateUserKanji(Guid kanjiId, Guid userId, [FromBody] UpdateOrAddUserKanjiDto dto)
+        {
+            var result = await _kanjiService.UpdateOrAddUserKanjiAsync(kanjiId, userId, dto);
 
+            if (result.IsFailed)
+                return BadRequest(result.Errors.Select(e => e.Message));
+
+            return Ok("UserKanji updated successfully.");
+        }
     }
 }

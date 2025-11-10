@@ -7,5 +7,9 @@ namespace Domain.Repositories
     {
         Task<PaginatedList<Kanji>> GetAllKanjiAsync(int pageIndex, int pageSize, string? sortBy, CancellationToken cancellationToken = default);
         Task<Kanji?> GetKanjiWithUserDetailsAsync(Guid kanjiId, Guid userId);
+        Task<UserKanji?> GetUserKanjiAsync(Guid userId, Guid kanjiId);
+        Task SaveChangesAsync();
+        Task AddAsync(UserKanji userKanji);
+        Task UpdateAsync(UserKanji userKanji);
     }
 }

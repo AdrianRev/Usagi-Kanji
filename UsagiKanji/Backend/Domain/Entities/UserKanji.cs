@@ -1,6 +1,6 @@
 ﻿namespace Domain.Entities
 {
-    public class UserKanji : BaseEntity
+    public class UserKanji
     {
         public Guid UserId { get; set; }
         public Guid KanjiId { get; set; }

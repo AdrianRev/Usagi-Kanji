@@ -38,6 +38,7 @@ namespace Infrastructure.Repositories
             return await _context.Kanji
                 .Include(k => k.Readings)
                 .Include(k => k.Meanings)
+                .Include(k => k.UserKanjis.Where(uk => uk.UserId == userId))
                 .Include(k => k.VocabularyKanjiCharacters)
                     .ThenInclude(vkc => vkc.KanjiForm)
                         .ThenInclude(vf => vf.Vocabulary)
@@ -46,13 +47,27 @@ namespace Infrastructure.Repositories
                     .ThenInclude(vkc => vkc.KanjiForm)
                         .ThenInclude(vf => vf.Vocabulary)
                             .ThenInclude(v => v.KanaReadings)
-                .Include(k => k.VocabularyKanjiCharacters)
-                    .ThenInclude(vkc => vkc.KanjiForm)
-                        .ThenInclude(vf => vf.Vocabulary)
-                            .ThenInclude(v => v.KanjiForms)
-                                .ThenInclude(kf => kf.KanjiCharacters)
                 .FirstOrDefaultAsync(k => k.Id == kanjiId);
         }
+        public async Task<UserKanji?> GetUserKanjiAsync(Guid userId, Guid kanjiId)
+        {
+            return await _context.UserKanjis
+                .FirstOrDefaultAsync(uk => uk.UserId == userId && uk.KanjiId == kanjiId);
+        }
 
+        public async Task AddAsync(UserKanji userKanji)
+        {
+            await _context.UserKanjis.AddAsync(userKanji);
+        }
+
+        public async Task UpdateAsync(UserKanji userKanji)
+        {
+            _context.UserKanjis.Update(userKanji);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }
