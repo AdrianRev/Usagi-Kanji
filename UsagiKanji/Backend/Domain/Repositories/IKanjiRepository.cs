@@ -6,5 +6,6 @@ namespace Domain.Repositories
     public interface IKanjiRepository
     {
         Task<PaginatedList<Kanji>> GetAllKanjiAsync(int pageIndex, int pageSize, string? sortBy, CancellationToken cancellationToken = default);
+        Task<Kanji?> GetKanjiWithUserDetailsAsync(Guid kanjiId, Guid userId);
     }
 }

@@ -13,5 +13,7 @@
         public ICollection<Reading> Readings { get; set; } = new List<Reading>();
         public ICollection<Meaning> Meanings { get; set; } = new List<Meaning>();
         public ICollection<VocabularyKanjiCharacter> VocabularyKanjiCharacters { get; set; } = new List<VocabularyKanjiCharacter>();
+        public ICollection<UserKanji> UserKanjis { get; set; } = new List<UserKanji>();
+
     }
 }

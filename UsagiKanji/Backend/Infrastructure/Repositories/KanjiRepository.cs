@@ -32,5 +32,27 @@ namespace Infrastructure.Repositories
 
             return new PaginatedList<Kanji>(items, pageIndex, totalPages);
         }
+
+        public async Task<Kanji?> GetKanjiWithUserDetailsAsync(Guid kanjiId, Guid userId)
+        {
+            return await _context.Kanji
+                .Include(k => k.Readings)
+                .Include(k => k.Meanings)
+                .Include(k => k.VocabularyKanjiCharacters)
+                    .ThenInclude(vkc => vkc.KanjiForm)
+                        .ThenInclude(vf => vf.Vocabulary)
+                            .ThenInclude(v => v.Glosses)
+                .Include(k => k.VocabularyKanjiCharacters)
+                    .ThenInclude(vkc => vkc.KanjiForm)
+                        .ThenInclude(vf => vf.Vocabulary)
+                            .ThenInclude(v => v.KanaReadings)
+                .Include(k => k.VocabularyKanjiCharacters)
+                    .ThenInclude(vkc => vkc.KanjiForm)
+                        .ThenInclude(vf => vf.Vocabulary)
+                            .ThenInclude(v => v.KanjiForms)
+                                .ThenInclude(kf => kf.KanjiCharacters)
+                .FirstOrDefaultAsync(k => k.Id == kanjiId);
+        }
+
     }
 }

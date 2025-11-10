@@ -10,6 +10,7 @@ namespace Infrastructure
         public DbSet<Kanji> Kanji { get; set; }
         public DbSet<Vocabulary> Vocabulary { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<UserKanji> UserKanjis { get; set; }
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

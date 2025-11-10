@@ -11,5 +11,3 @@
         public ICollection<VocabularyKanjiCharacter> KanjiCharacters { get; set; } = new List<VocabularyKanjiCharacter>();
     }
 }
-
-

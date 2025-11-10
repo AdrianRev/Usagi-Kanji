@@ -1,7 +1,10 @@
 ﻿using Application.Dtos;
 using Application.Interfaces;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace WebAPI.Controllers
 {
@@ -37,5 +40,35 @@ namespace WebAPI.Controllers
 
             return Ok(result.Value);
         }
+
+        //[HttpGet("{id}")]
+        //[Authorize(AuthenticationSchemes = "Bearer")]
+        //public async Task<IActionResult> GetKanjiById(Guid id)
+        //{
+        //    var sub = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+        //    if (!Guid.TryParse(sub, out var userId))
+        //        return Unauthorized("Invalid token.");
+
+
+        //    var kanjiDto = await _kanjiService.GetKanjiByIdAsync(id, userId);
+
+        //    if (kanjiDto == null)
+        //        return NotFound();
+
+        //    return Ok(kanjiDto);
+        //}
+
+        [HttpGet("{kanjiId}/{userId}")]
+        public async Task<IActionResult> GetKanjiById(Guid kanjiId, Guid userId)
+        {
+            var kanjiDto = await _kanjiService.GetKanjiByIdAsync(kanjiId, userId);
+
+            if (kanjiDto == null)
+                return NotFound();
+
+            return Ok(kanjiDto);
+        }
+
+
     }
 }
