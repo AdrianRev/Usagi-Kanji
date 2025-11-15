@@ -1,9 +1,9 @@
 import axios from 'axios';
-import type { SignUpRequest, LoginRequest, LoginResponse } from '../types/auth';
+import type { SignUpApiRequest, LoginRequest, LoginResponse } from '../types/auth';
 
 const API_BASE_URL = 'http://localhost:5261/api';
 
-export const signUp = async (data: SignUpRequest) => {
+export const signUp = async (data: SignUpApiRequest) => {
     return axios.post(`${API_BASE_URL}/auth/signup`, data);
 };
 
