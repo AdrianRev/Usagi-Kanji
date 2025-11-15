@@ -1,55 +1,105 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './LoginPage.scss';
-import { login } from '../../api/auth';
-import type { LoginRequest, LoginResponse } from '../../types/auth';
+﻿import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "./LoginPage.module.scss";
+import { login as apiLogin } from "../../api/auth";
+import type { LoginRequest } from "../../types/auth";
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate();
-    const [form, setForm] = useState<LoginRequest>({
-        usernameOrEmail: '',
-        password: '',
-    });
-    const [error, setError] = useState<string>('');
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    const [loginData, setLoginData] = useState<LoginRequest>({
+        usernameOrEmail: "",
+        password: "",
+    });
+    const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
+    const togglePasswordVisibility = () => setPasswordVisible((v) => !v);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setLoginData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError('');
+        setError("");
+        setIsLoading(true);
 
         try {
-            const response = await login(form);
-            localStorage.setItem('token', response.token);
-            navigate('/main');
+            const res = await apiLogin(loginData);
+            localStorage.setItem("token", res.token);
+            navigate("/main");
         } catch (err: any) {
-            setError(err.response?.data?.errors?.[0]?.message || 'Login failed');
+            setError(err.response?.data?.message || "Login failed");
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <div className="login-page">
-            <form className="login-form" onSubmit={handleSubmit}>
-                <h2>Login</h2>
-                {error && <div className="error">{error}</div>}
-                <input
-                    type="text"
-                    name="usernameOrEmail"
-                    placeholder="Username or Email"
-                    value={form.usernameOrEmail}
-                    onChange={handleChange}
-                />
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={form.password}
-                    onChange={handleChange}
-                />
-                <button type="submit">Login</button>
-            </form>
+        <div className={styles.mainContainer}>
+            <div className={styles.formCard}>
+                <h2 className={styles.title}>Sign In</h2>
+
+                {/* Error toast */}
+                {error && (
+                    <div className={styles.errorToast} role="alert">
+                        {error}
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} className={styles.form}>
+                    {/* Username / Email */}
+                    <div className={styles.inputGroup}>
+                        <input
+                            type="text"
+                            name="usernameOrEmail"
+                            value={loginData.usernameOrEmail}
+                            onChange={handleInputChange}
+                            required
+                            autoComplete="username"
+                            className={styles.input}
+                            id="usernameOrEmail"
+                            placeholder="Username or Email"
+                        />
+                    </div>
+
+                    {/* Password */}
+                    <div className={styles.inputGroup}>
+                        <input
+                            type={passwordVisible ? "text" : "password"}
+                            name="password"
+                            value={loginData.password}
+                            onChange={handleInputChange}
+                            required
+                            autoComplete="current-password"
+                            className={styles.input}
+                            id="password"
+                            placeholder="Password"
+                        />
+                        <button
+                            type="button"
+                            onClick={togglePasswordVisibility}
+                            className={styles.toggleBtn}
+                            aria-label={passwordVisible ? "Hide password" : "Show password"}
+                        >
+                            {passwordVisible ? "🙈" : "👁️"}
+                        </button>
+                    </div>
+
+                    {/* Submit */}
+                    <button
+                        type="submit"
+                        disabled={isLoading}
+                        className={styles.submitBtn}
+                        aria-busy={isLoading}
+                    >
+                        {isLoading ? <span className={styles.spinner}>⟳</span> : "Sign In"}
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };

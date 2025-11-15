@@ -1,0 +1,16 @@
+// Light mode
+$gradient-sakura-start: #fcd1e0;
+$gradient-sakura-end: #ffeef5;
+
+// Dark mode
+$gradient-sakura-dark-start: #c44c7a;
+$gradient-sakura-dark-end: #e89ab3;
+
+@mixin sakura-gradient {
+    background: linear-gradient(135deg, $gradient-sakura-start, $gradient-sakura-end);
+    // Dark mode override
+    .dark &,
+    html.dark & {
+        background: linear-gradient(135deg, $gradient-sakura-dark-start, $gradient-sakura-dark-end);
+    }
+}

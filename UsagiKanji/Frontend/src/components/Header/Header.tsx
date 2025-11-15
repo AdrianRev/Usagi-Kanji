@@ -1,33 +1,129 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import './Header.scss';
+﻿import { useState, useEffect} from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import styles from "./Header.module.scss";
 
 const Header: React.FC = () => {
     const navigate = useNavigate();
-    const token = localStorage.getItem('token');
+    const location = useLocation();
+    const token = localStorage.getItem("token");
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [showLogoutToast, setShowLogoutToast] = useState(false);
+    const [isDark, setIsDark] = useState(document.documentElement.classList.contains("dark"));
+
+    // Sync state with actual class
+    useEffect(() => {
+        const observer = new MutationObserver(() => {
+            setIsDark(document.documentElement.classList.contains("dark"));
+        });
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+        return () => observer.disconnect();
+    }, []);
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        navigate('/login');
+        localStorage.removeItem("token");
+        setShowLogoutToast(true);
+        setTimeout(() => {
+            setShowLogoutToast(false);
+            navigate("/login");
+        }, 1200);
     };
 
+    const toggleMobileMenu = () => setMobileMenuOpen((v) => !v);
+
+    const toggleDarkMode = () => {
+        document.documentElement.classList.toggle("dark");
+    };
+
+    const isActive = (path: string) => location.pathname === path;
+
     return (
-        <header className="header">
-            <nav>
-                {!token && (
-                    <>
-                        <Link to="/login">Login</Link>
-                        <Link to="/signup">Sign Up</Link>
-                    </>
+        <>
+            <header className={styles.header}>
+                <div className={styles.container}>
+                    {/* Logo */}
+                    <Link to={token ? "/main" : "/"} className={styles.logo}>
+                        <span className={styles.logoIcon}>兔</span>
+                    </Link>
+
+                    {/* Desktop Nav */}
+                    <nav className={styles.nav}>
+                        {!token ? (
+                            <>
+                                <Link
+                                    to="/login"
+                                    className={`${styles.navLink} ${isActive("/login") ? styles.active : ""}`}
+                                >
+                                    Login
+                                </Link>
+                                <Link
+                                    to="/signup"
+                                    className={`${styles.navLink} ${isActive("/signup") ? styles.active : ""}`}
+                                >
+                                    Sign Up
+                                </Link>
+                            </>
+                        ) : (
+                            <>
+                                <button onClick={handleLogout} className={styles.logoutBtn}>
+                                    Logout
+                                </button>
+                            </>
+                        )}
+
+                        {/* DARK MODE TOGGLE – Desktop */}
+                        <button onClick={toggleDarkMode} className={styles.themeToggle}>
+                            {isDark ? "🌞" : "🌛"}
+                        </button>
+                    </nav>
+
+                    {/* Mobile Menu Toggle */}
+                    <button
+                        onClick={toggleMobileMenu}
+                        className={styles.mobileToggle}
+                        aria-label="Toggle menu"
+                        aria-expanded={mobileMenuOpen}
+                    >
+                        <span className={mobileMenuOpen ? styles.hamburgerClose : styles.hamburger}>
+                            {mobileMenuOpen ? "×" : "Menu"}
+                        </span>
+                    </button>
+                </div>
+
+                {/* Mobile Nav */}
+                {mobileMenuOpen && (
+                    <div className={styles.mobileNav}>
+                        {!token ? (
+                            <>
+                                <Link to="/login" onClick={toggleMobileMenu} className={styles.mobileLink}>
+                                    Login
+                                </Link>
+                                <Link to="/signup" onClick={toggleMobileMenu} className={styles.mobileLink}>
+                                    Sign Up
+                                </Link>
+                            </>
+                        ) : (
+                            <>
+                                <button onClick={handleLogout} className={styles.mobileLogout}>
+                                    Logout
+                                </button>
+                            </>
+                        )}
+
+                        {/* DARK MODE TOGGLE – Mobile */}
+                        <button onClick={toggleDarkMode} className={styles.themeToggle}>
+                            {isDark ? "Light" : "Dark"}
+                        </button>
+                    </div>
                 )}
-                {token && (
-                    <>
-                        <Link to="/main">Main</Link>
-                        <button onClick={handleLogout}>Logout</button>
-                    </>
-                )}
-            </nav>
-        </header>
+            </header>
+
+            {/* Logout Toast */}
+            {showLogoutToast && (
+                <div className={styles.toast}>
+                    <span>Logged out successfully</span>
+                </div>
+            )}
+        </>
     );
 };
 

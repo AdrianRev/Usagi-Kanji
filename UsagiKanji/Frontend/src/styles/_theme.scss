@@ -1,0 +1,32 @@
+
+:root {
+    --text-primary: #222;
+    --text-muted: #555;
+    --accent: #ff8fab;
+    --accent-hover: #ffa8c1;
+    --bg-start: #fcd1e0;
+    --bg-end: #ffeef5;
+    --header-bg: rgba(255, 255, 255, 0.92);
+    --header-blur: 10px;
+    --border: #e2e8f0;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --card-bg: rgba(255, 255, 255, 0.92);
+    --card-blur: 16px;
+    --error: #e53e3e;
+    --bg-overlay: rgba(0, 0, 0, 0);
+}
+
+html.dark {
+    --text-primary: #e0e0e0;
+    --text-muted: #bbb;
+    --accent: #ff9ab8;
+    --accent-hover: #ffb3cc;
+    --bg-start: #1a1a2e;
+    --bg-end: #16213e;
+    --header-bg: rgba(30, 30, 46, 0.92);
+    --border: #444;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --card-bg: rgba(35, 30, 45, 0.9);
+    --card-blur: 14px;
+    --bg-overlay: rgba(0, 0, 0, 0.30);
+}
