@@ -63,6 +63,12 @@
     gap: 1.5rem;
     align-items: center;
 }
+.navLeft {
+    display: flex;
+    gap: 1.5rem;
+    margin-left: 1.5rem;
+    align-items: center;
+}
 
 .navLink {
     text-decoration: none;
@@ -90,7 +96,7 @@
     }
 }
 
-.logoutBtn {
+.button {
     cursor: pointer;
     padding: 0.5rem 1rem;
     font-size: 0.95rem;

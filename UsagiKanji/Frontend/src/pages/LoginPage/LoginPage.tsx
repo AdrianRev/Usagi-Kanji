@@ -32,7 +32,6 @@ const LoginPage: React.FC = () => {
         try {
             const res = await apiLogin(loginData);
 
-            // Defensive token extraction
             const token =
                 res?.token ??
                 res?.data?.token ??
