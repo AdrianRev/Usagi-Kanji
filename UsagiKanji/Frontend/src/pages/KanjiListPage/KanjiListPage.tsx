@@ -16,7 +16,7 @@ export default function KanjiListPage() {
         try {
             const data: PaginatedList<KanjiListItem> = await kanjiApi.getAll({
                 pageIndex,
-                pageSize: 20,
+                pageSize: 30,
                 sortBy: sortBy || undefined
             });
             setKanji(data.items);
@@ -39,7 +39,6 @@ export default function KanjiListPage() {
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
                 >
-                    <option value="">Default</option>
                     <option value="grade">Grade</option>
                     <option value="jlptlevel">JLPT Level</option>
                     <option value="frequency">Frequency</option>
@@ -51,11 +50,11 @@ export default function KanjiListPage() {
             {loading ? (
                 <p className={styles.loading}>Loading...</p>
             ) : (
-                <div className={styles.list}>
+                <div className={styles.grid}>
                     {kanji.map(k => (
-                        <div key={k.id} className={styles.item}>
-                            <span className={styles.character}>{k.character}</span>
-                            <span className={styles.meaning}>{k.primaryMeaning}</span>
+                        <div key={k.id} className={styles.card}>
+                            <div className={styles.character}>{k.character}</div>
+                            <div className={styles.meaning}>{k.primaryMeaning}</div>
                         </div>
                     ))}
                 </div>
