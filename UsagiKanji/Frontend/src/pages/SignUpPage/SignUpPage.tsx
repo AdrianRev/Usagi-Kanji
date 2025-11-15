@@ -8,7 +8,7 @@ const SignUpPage: React.FC = () => {
     const navigate = useNavigate();
 
     const [passwordVisible, setPasswordVisible] = useState(false);
-    const [confirmVisible, setConfirmVisible] = useState(false);
+
     const [formData, setFormData] = useState<SignUpRequest>({
         username: "",
         email: "",
@@ -19,7 +19,6 @@ const SignUpPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const togglePasswordVisibility = () => setPasswordVisible((v) => !v);
-    const toggleConfirmVisibility = () => setConfirmVisible((v) => !v);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -32,7 +31,7 @@ const SignUpPage: React.FC = () => {
         setIsLoading(true);
 
         if (formData.password !== formData.confirmPassword) {
-            setError("Passwords do not match");
+            setError("Passwords are not the same");
             setIsLoading(false);
             return;
         }
@@ -57,9 +56,8 @@ const SignUpPage: React.FC = () => {
     return (
         <div className={styles.mainContainer}>
             <div className={styles.formCard}>
-                <h2 className={styles.title}>Create Account</h2>
+                <h2 className={styles.title}>Create account</h2>
 
-                {/* Error toast */}
                 {error && (
                     <div className={styles.errorToast} role="alert">
                         {error}
@@ -67,7 +65,6 @@ const SignUpPage: React.FC = () => {
                 )}
 
                 <form onSubmit={handleSubmit} className={styles.form}>
-                    {/* Username */}
                     <div className={styles.inputGroup}>
                         <input
                             type="text"
@@ -82,7 +79,6 @@ const SignUpPage: React.FC = () => {
                         />
                     </div>
 
-                    {/* Email */}
                     <div className={styles.inputGroup}>
                         <input
                             type="email"
@@ -97,7 +93,6 @@ const SignUpPage: React.FC = () => {
                         />
                     </div>
 
-                    {/* Password */}
                     <div className={styles.inputGroup}>
                         <input
                             type={passwordVisible ? "text" : "password"}
@@ -114,16 +109,15 @@ const SignUpPage: React.FC = () => {
                             type="button"
                             onClick={togglePasswordVisibility}
                             className={styles.toggleBtn}
-                            aria-label={passwordVisible ? "Hide password" : "Show password"}
+                            aria-label={passwordVisible ? "Show password" : "Hide password"}
                         >
                             {passwordVisible ? "🙈" : "👁️"}
                         </button>
                     </div>
 
-                    {/* Confirm Password */}
                     <div className={styles.inputGroup}>
                         <input
-                            type={confirmVisible ? "text" : "password"}
+                            type={passwordVisible ? "text" : "password"}
                             name="confirmPassword"
                             value={formData.confirmPassword}
                             onChange={handleInputChange}
@@ -131,26 +125,17 @@ const SignUpPage: React.FC = () => {
                             autoComplete="new-password"
                             className={styles.input}
                             id="confirmPassword"
-                            placeholder="Confirm Password"
+                            placeholder="Repeat password"
                         />
-                        <button
-                            type="button"
-                            onClick={toggleConfirmVisibility}
-                            className={styles.toggleBtn}
-                            aria-label={confirmVisible ? "Hide password" : "Show password"}
-                        >
-                            {confirmVisible ? "🙈" : "👁️"}
-                        </button>
                     </div>
 
-                    {/* Submit */}
                     <button
                         type="submit"
                         disabled={isLoading}
                         className={styles.submitBtn}
                         aria-busy={isLoading}
                     >
-                        {isLoading ? <span className={styles.spinner}>⟳</span> : "Sign Up"}
+                        {isLoading ? <span className={styles.spinner}>Przetwarzanie</span> : "Sign up"}
                     </button>
                 </form>
             </div>

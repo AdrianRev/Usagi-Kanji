@@ -10,7 +10,6 @@ const Header: React.FC = () => {
     const [showLogoutToast, setShowLogoutToast] = useState(false);
     const [isDark, setIsDark] = useState(document.documentElement.classList.contains("dark"));
 
-    // Sync state with actual class
     useEffect(() => {
         const observer = new MutationObserver(() => {
             setIsDark(document.documentElement.classList.contains("dark"));

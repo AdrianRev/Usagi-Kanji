@@ -1,8 +1,6 @@
 ﻿@use "../../styles/gradients" as grad;
 
-/* -------------------------------------------------
-   Header Container
-   ------------------------------------------------- */
+
 .header {
     position: sticky;
     top: 0;
@@ -24,9 +22,6 @@
     padding: 0 1.5rem;
 }
 
-/* -------------------------------------------------
-   Logo
-   ------------------------------------------------- */
 .logo {
     display: flex;
     align-items: center;
@@ -35,10 +30,6 @@
     font-weight: 700;
     color: var(--text-primary);
     transition: color 0.2s;
-
-    //&:hover {
-    //    color: var(--accent);
-    //}
 }
 
 .logoIcon {
@@ -62,14 +53,11 @@
     }
 }
 
-/* Dark mode override */
+/*  Dark mode override  */
 :global(.dark) .logoIcon {
     color: black;
 }
 
-/* -------------------------------------------------
-   Desktop Nav
-   ------------------------------------------------- */
 .nav {
     display: flex;
     gap: 1.5rem;
@@ -137,9 +125,7 @@
     }
 }
 
-/* -------------------------------------------------
-   Mobile
-   ------------------------------------------------- */
+/*  Mobile  */
 .mobileToggle {
     display: none;
     background: none;

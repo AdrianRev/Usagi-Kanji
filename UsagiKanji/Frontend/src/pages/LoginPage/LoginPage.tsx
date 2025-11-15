@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import styles from "./LoginPage.module.scss";
 import { login as apiLogin } from "../../api/auth";
 import type { LoginRequest } from "../../types/auth";
+import useWebsiteTitle from "../../hooks/useWebsiteTitle";
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate();
-
+    useWebsiteTitle("Sign in page");
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [loginData, setLoginData] = useState<LoginRequest>({
         usernameOrEmail: "",
