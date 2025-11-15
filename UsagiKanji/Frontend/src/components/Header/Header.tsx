@@ -52,13 +52,13 @@ const Header: React.FC = () => {
                                     to="/login"
                                     className={`${styles.navLink} ${isActive("/login") ? styles.active : ""}`}
                                 >
-                                    Login
+                                    Log in
                                 </Link>
                                 <Link
                                     to="/signup"
                                     className={`${styles.navLink} ${isActive("/signup") ? styles.active : ""}`}
                                 >
-                                    Sign Up
+                                    Sign up
                                 </Link>
                             </>
                         ) : (

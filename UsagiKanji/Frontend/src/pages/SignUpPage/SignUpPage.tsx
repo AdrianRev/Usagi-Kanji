@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import styles from "../LoginPage/LoginPage.module.scss";
 import { signUp as apiSignup } from "../../api/auth";
 import type { SignUpRequest, SignUpApiRequest } from "../../types/auth";
+import useWebsiteTitle from "../../hooks/useWebsiteTitle";
 
 const SignUpPage: React.FC = () => {
     const navigate = useNavigate();
-
+    useWebsiteTitle("Sign up - UsagiKanji");
     const [passwordVisible, setPasswordVisible] = useState(false);
 
     const [formData, setFormData] = useState<SignUpRequest>({
@@ -23,15 +24,50 @@ const SignUpPage: React.FC = () => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
+        if (error) setError("");
     };
 
+    const validateUsername = (name: string): string | null => {
+        if (!name) return "Username is required";
+        if (name.length < 3) return "Username must be at least 3 characters long";
+        if (!/^[a-zA-Z0-9_-]+$/.test(name))
+            return "Username can only contain letters, numbers, _ and -";
+        return null;
+    };
+
+    const validatePassword = (pwd: string): string | null => {
+        const minLength = 8;
+        const hasUpper = /[A-Z]/.test(pwd);
+        const hasLower = /[a-z]/.test(pwd);
+        const hasDigit = /\d/.test(pwd);
+
+        if (pwd.length < minLength) return `Password must be at least ${minLength} characters long`;
+        if (!hasUpper) return "Password must contain at least one uppercase letter";
+        if (!hasLower) return "Password must contain at least one lowercase letter";
+        if (!hasDigit) return "Password must contain at least one digit";
+        return null;
+    };
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
         setIsLoading(true);
 
+        const userError = validateUsername(formData.username);
+        if (userError) {
+            setError(userError);
+            setIsLoading(false);
+            return;
+        }
+
         if (formData.password !== formData.confirmPassword) {
-            setError("Passwords are not the same");
+            setError("Passwords do not match");
+            setIsLoading(false);
+            return;
+        }
+
+        const pwdError = validatePassword(formData.password);
+        if (pwdError) {
+            setError(pwdError);
             setIsLoading(false);
             return;
         }
@@ -43,11 +79,24 @@ const SignUpPage: React.FC = () => {
         };
 
         try {
-            const res = await apiSignup(payload);   // ← returns LoginResponse
-            localStorage.setItem("token", res.token); // ← res.token (not res.data.token)
+            const res = await apiSignup(payload);
+            const token = res?.token ?? res?.data?.token ?? res?.accessToken ?? res?.jwt;
+            if (!token) {
+                setError("Sign-up succeeded but no token received");
+                setIsLoading(false);
+                return;
+            }
+
+            localStorage.setItem("token", token);
             navigate("/main");
         } catch (err: any) {
-            setError(err.response?.data?.message || "Sign‑up failed");
+            const serverMsg =
+                err.response?.data?.detail ||
+                err.response?.data?.message ||
+                err.response?.data?.error ||
+                "Sign-up failed. Please try again.";
+
+            setError(serverMsg);
         } finally {
             setIsLoading(false);
         }
@@ -135,7 +184,7 @@ const SignUpPage: React.FC = () => {
                         className={styles.submitBtn}
                         aria-busy={isLoading}
                     >
-                        {isLoading ? <span className={styles.spinner}>Przetwarzanie</span> : "Sign up"}
+                        {isLoading ? <span className={styles.spinner}>Signing up</span> : "Sign up"}
                     </button>
                 </form>
             </div>

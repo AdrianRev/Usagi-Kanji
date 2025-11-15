@@ -1,7 +1,9 @@
 import React from 'react';
 import './MainPage.scss';
+import useWebsiteTitle from "../../hooks/useWebsiteTitle";
 
 const MainPage: React.FC = () => {
+    useWebsiteTitle("UsagiKanji");
     const token = localStorage.getItem('token');
 
     const handleLogout = () => {

@@ -24,14 +24,28 @@ namespace Application.Services
 
         public async Task<Result<User>> SignUpAsync(string username, string email, string password)
         {
-            var existingUser = await _userRepository.GetByUsernameOrEmailAsync(username)
-                              ?? await _userRepository.GetByUsernameOrEmailAsync(email);
-
-            if (existingUser != null)
+            var userByUsername = !string.IsNullOrWhiteSpace(username)
+                ? await _userRepository.GetByUsernameOrEmailAsync(username)
+                : null;
+            if (userByUsername != null)
             {
                 return Result.Fail<User>(
-                    new Error("Username or Email already exists")
+                    new Error("Account using this username already exists")
                         .WithMetadata("StatusCode", 409)
+                        .WithMetadata("field", "username")
+                );
+            }
+
+            var userByEmail = userByUsername == null && !string.IsNullOrWhiteSpace(email)
+                ? await _userRepository.GetByUsernameOrEmailAsync(email)
+                : null;
+
+            if (userByEmail != null)
+            {
+                return Result.Fail<User>(
+                    new Error("Account using this email already exists")
+                        .WithMetadata("StatusCode", 409)
+                        .WithMetadata("field", "email")
                 );
             }
 
