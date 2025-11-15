@@ -1,0 +1,213 @@
+﻿@use "../../styles/gradients" as grad;
+
+/* -------------------------------------------------
+   Header Container
+   ------------------------------------------------- */
+.header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: var(--header-bg);
+    backdrop-filter: blur(var(--header-blur));
+    -webkit-backdrop-filter: blur(var(--header-blur));
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    padding: 0 1.5rem;
+}
+
+/* -------------------------------------------------
+   Logo
+   ------------------------------------------------- */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-weight: 700;
+    color: var(--text-primary);
+    transition: color 0.2s;
+
+    //&:hover {
+    //    color: var(--accent);
+    //}
+}
+
+.logoIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(255, 141, 171, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    @include grad.sakura-gradient;
+
+    .logo:hover & {
+        transform: scale(1.06) rotate(3deg);
+        color: var(--accent);
+    }
+}
+
+/* Dark mode override */
+:global(.dark) .logoIcon {
+    color: black;
+}
+
+/* -------------------------------------------------
+   Desktop Nav
+   ------------------------------------------------- */
+.nav {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.navLink {
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.5rem 0;
+    position: relative;
+    transition: color 0.2s;
+
+    &.active,
+    &:hover {
+        color: var(--accent);
+    }
+
+    &.active::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--accent);
+        border-radius: 1px;
+    }
+}
+
+.logoutBtn {
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: all 0.2s;
+
+    &:hover {
+        background: rgba(255, 141, 171, 0.15);
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+}
+
+.themeToggle {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+        background: rgba(255, 141, 171, 0.15);
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+}
+
+/* -------------------------------------------------
+   Mobile
+   ------------------------------------------------- */
+.mobileToggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.mobileNav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--header-bg);
+    backdrop-filter: blur(var(--header-blur));
+    border-bottom: 1px solid var(--border);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.mobileLink {
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    transition: background 0.2s;
+
+    &:hover,
+    &.active {
+        background: rgba(255, 141, 171, 0.15);
+        color: var(--accent);
+    }
+}
+
+.mobileLogout {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: #e53e3e;
+        color: #e53e3e;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav {
+        display: none;
+    }
+
+    .mobileToggle {
+        display: block;
+    }
+
+    .container {
+        height: 56px;
+    }
+
+    .logoText {
+        font-size: 1.2rem;
+    }
+}
