@@ -3,79 +3,62 @@ using Application.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class KanjiController : ControllerBase
     {
         private readonly IKanjiService _kanjiService;
         private readonly IValidator<KanjiListParams> _validator;
+        private readonly ICurrentUserService _currentUser;
 
-        public KanjiController(IKanjiService kanjiService, IValidator<KanjiListParams> validator)
+        public KanjiController(
+            IKanjiService kanjiService,
+            IValidator<KanjiListParams> validator,
+            ICurrentUserService currentUser)
         {
             _kanjiService = kanjiService;
             _validator = validator;
+            _currentUser = currentUser;
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetAll([FromQuery] KanjiListParams parameters, CancellationToken cancellationToken)
         {
-            var authUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                               ?? User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            var userId = _currentUser.UserId;
+            if (userId == null)
+                return Unauthorized();
 
-            if (!Guid.TryParse(authUserIdClaim, out var userId))
-                return Unauthorized("Invalid user ID in token.");
+            var result = await _kanjiService.GetAllKanjiAsync(parameters, userId.Value, cancellationToken);
 
-            var result = await _kanjiService.GetAllKanjiAsync(parameters, userId, cancellationToken);
-
-            if (result.IsFailed)
-                return BadRequest(result.Errors);
-
-            return Ok(result.Value);
+            return result.IsFailed ? BadRequest(result.Errors) : Ok(result.Value);
         }
 
-        //[HttpGet("{id}")]
-        //[Authorize(AuthenticationSchemes = "Bearer")]
-        //public async Task<IActionResult> GetKanjiById(Guid id)
-        //{
-        //    var sub = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-        //    if (!Guid.TryParse(sub, out var userId))
-        //        return Unauthorized("Invalid token.");
-
-
-        //    var kanjiDto = await _kanjiService.GetKanjiByIdAsync(id, userId);
-
-        //    if (kanjiDto == null)
-        //        return NotFound();
-
-        //    return Ok(kanjiDto);
-        //}
-
-        [HttpGet("{kanjiId}/{userId}")]
-        public async Task<IActionResult> GetKanjiById(Guid kanjiId, Guid userId)
+        [HttpGet("{kanjiId}")]
+        public async Task<IActionResult> GetKanjiById(Guid kanjiId)
         {
-            var kanjiDto = await _kanjiService.GetKanjiByIdAsync(kanjiId, userId);
+            var userId = _currentUser.UserId;
+            if (userId == null)
+                return Unauthorized();
 
-            if (kanjiDto == null)
-                return NotFound();
+            var kanjiDto = await _kanjiService.GetKanjiByIdAsync(kanjiId, userId.Value);
 
-            return Ok(kanjiDto);
+            return kanjiDto == null ? NotFound() : Ok(kanjiDto);
         }
 
-        [HttpPost("{kanjiId}/user/{userId}")]
-        public async Task<IActionResult> AddOrUpdateUserKanji(Guid kanjiId, Guid userId, [FromBody] UpdateOrAddUserKanjiDto dto)
+        [HttpPost("{kanjiId}")]
+        public async Task<IActionResult> AddOrUpdateUserKanji(Guid kanjiId, [FromBody] UpdateOrAddUserKanjiDto dto)
         {
-            var result = await _kanjiService.UpdateOrAddUserKanjiAsync(kanjiId, userId, dto);
+            var userId = _currentUser.UserId;
+            if (userId == null)
+                return Unauthorized();
 
-            if (result.IsFailed)
-                return BadRequest(result.Errors.Select(e => e.Message));
+            var result = await _kanjiService.UpdateOrAddUserKanjiAsync(kanjiId, userId.Value, dto);
 
-            return Ok("UserKanji updated successfully.");
+            return result.IsFailed ? BadRequest(result.Errors.Select(e => e.Message)) : Ok("UserKanji updated successfully.");
         }
     }
 }

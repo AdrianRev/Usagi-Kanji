@@ -8,7 +8,11 @@ export default function KanjiListPage() {
     const [kanji, setKanji] = useState<KanjiListItem[]>([]);
     const [pageIndex, setPageIndex] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [sortBy, setSortBy] = useState<string>("");
+
+    const [sortBy, setSortBy] = useState<string>(() => {
+        return localStorage.getItem("kanji-sort-by") || "grade";
+    });
+
     const [loading, setLoading] = useState(false);
 
     const loadKanji = async () => {
@@ -29,6 +33,11 @@ export default function KanjiListPage() {
     useEffect(() => {
         loadKanji();
     }, [pageIndex, sortBy]);
+
+    useEffect(() => {
+        localStorage.setItem("kanji-sort-by", sortBy);
+    }, [sortBy]);
+
 
     return (
         <div className={styles.wrapper}>

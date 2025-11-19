@@ -8,6 +8,7 @@ using Infrastructure;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Http;
 using System.Text;
 using WebApi.Validators;
 
@@ -16,12 +17,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddValidatorsFromAssemblyContaining<SignUpDtoValidator>();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<IKanjiService, KanjiService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IKanjiRepository, KanjiRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
