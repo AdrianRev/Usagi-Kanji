@@ -68,15 +68,41 @@
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
-
+    // Default hover (unlearned)
     &:hover {
         border-color: var(--accent);
-        background: rgba(255, 141, 171, 0.08);
+        background: rgba(var(--accent-rgb, 255, 141, 171), 0.08);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+    &.learned {
+        background: rgba(var(--learned-green-rgb), 0.15);
+        border-color: var(--learned-green);
+        box-shadow: 0 0 0 2px rgba(var(--learned-green-rgb), 0.2), var(--shadow);
+
+        .character {
+            color: var(--learned-green);
+            text-shadow: 0 0 10px rgba(var(--learned-green-rgb), 0.25);
+        }
+
+        .meaning {
+            color: var(--learned-green);
+            font-weight: 500;
+        }
+
+        .id {
+            color: var(--learned-green);
+            opacity: 0.8;
+        }
+
+        &:hover {
+            background: rgba(var(--learned-green-rgb), 0.25);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(var(--learned-green-rgb), 0.25), var(--shadow);
+        }
     }
 }
 

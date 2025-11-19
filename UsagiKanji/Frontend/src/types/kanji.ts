@@ -1,7 +1,8 @@
 export interface KanjiListItem {
-    id: number;
+    id: string;
     character: string;
     primaryMeaning?: string;
+    isLearned: boolean;
 }
 
 export interface PaginatedList<T> {

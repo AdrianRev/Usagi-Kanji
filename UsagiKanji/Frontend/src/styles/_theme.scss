@@ -14,6 +14,8 @@
     --card-blur: 16px;
     --error: #e53e3e;
     --bg-overlay: rgba(0, 0, 0, 0);
+    --learned-green: #22c55e;
+    --learned-green-rgb: 34, 197, 94;
 }
 
 html.dark {
@@ -29,4 +31,6 @@ html.dark {
     --card-bg: rgba(35, 30, 45, 0.9);
     --card-blur: 14px;
     --bg-overlay: rgba(0, 0, 0, 0.30);
+    --learned-green: #4ade80;
+    --learned-green-rgb: 74, 222, 128;
 }

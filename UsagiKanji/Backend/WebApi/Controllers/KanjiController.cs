@@ -22,18 +22,16 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAll([FromQuery] KanjiListParams parameters, CancellationToken cancellationToken)
         {
-            var validationResult = await _validator.ValidateAsync(parameters, cancellationToken);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.Errors.Select(e => new
-                {
-                    Field = e.PropertyName,
-                    Error = e.ErrorMessage
-                }));
-            }
-            var result = await _kanjiService.GetAllKanjiAsync(parameters, cancellationToken);
+            var authUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                               ?? User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+
+            if (!Guid.TryParse(authUserIdClaim, out var userId))
+                return Unauthorized("Invalid user ID in token.");
+
+            var result = await _kanjiService.GetAllKanjiAsync(parameters, userId, cancellationToken);
 
             if (result.IsFailed)
                 return BadRequest(result.Errors);

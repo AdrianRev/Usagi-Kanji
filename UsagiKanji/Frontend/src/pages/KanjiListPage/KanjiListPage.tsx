@@ -51,13 +51,18 @@ export default function KanjiListPage() {
                 <p className={styles.loading}>Loading...</p>
             ) : (
                 <div className={styles.grid}>
-                    {kanji.map((k, index) => (
-                        <div key={k.id || index} className={styles.card}>
-                            <div className={styles.id}>{(pageIndex - 1) * 25 + index + 1}</div>
-                            <div className={styles.character}>{k.character}</div>
-                            <div className={styles.meaning}>{k.primaryMeaning}</div>
-                        </div>
-                    ))}
+                        {kanji.map((k, index) => (
+                            <div
+                                key={k.id}
+                                className={`${styles.card} ${k.isLearned ? styles.learned : ''}`}
+                            >
+                                <div className={styles.id}>
+                                    {(pageIndex - 1) * 25 + index + 1}
+                                </div>
+                                <div className={styles.character}>{k.character}</div>
+                                <div className={styles.meaning}>{k.primaryMeaning}</div>
+                            </div>
+                        ))}
                 </div>
             )}
 
