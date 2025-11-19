@@ -57,6 +57,7 @@ namespace Application.Services
 
             return new KanjiDetailsDto
             {
+                Id = kanjiId,
                 Character = kanji.Character,
                 StrokeCount = kanji.StrokeCount,
                 Grade = kanji.Grade,

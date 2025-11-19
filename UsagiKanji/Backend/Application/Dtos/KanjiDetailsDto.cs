@@ -2,6 +2,7 @@
 {
     public class KanjiDetailsDto
     {
+        public Guid Id { get; set; }
         public string Character { get; set; } = string.Empty;
         public int? StrokeCount { get; set; }
         public int? Grade { get; set; }
