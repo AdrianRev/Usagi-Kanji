@@ -15,19 +15,24 @@ namespace Application.Services
             _kanjiRepository = kanjiRepository;
         }
 
-        public async Task<Result<PaginatedList<KanjiListItemDto>>> GetAllKanjiAsync(
-            KanjiListParams parameters,
-            CancellationToken cancellationToken = default)
+        public async Task<Result<PaginatedList<KanjiListItemDto>>> GetAllKanjiAsync(KanjiListParams parameters, Guid userId, CancellationToken cancellationToken = default)
         {
             var kanjiPage = await _kanjiRepository.GetAllKanjiAsync(
-                parameters.PageIndex, parameters.PageSize, parameters.SortBy, cancellationToken);
+                parameters.PageIndex,
+                parameters.PageSize,
+                parameters.SortBy,
+                cancellationToken);
+
+            var kanjiIdsInPage = kanjiPage.Items.Select(k => k.Id).ToList();
+            var learnedKanjiIds = await _kanjiRepository.GetLearnedKanjiIdsForUserAsync(userId, kanjiIdsInPage, cancellationToken);
 
             var dtoPage = new PaginatedList<KanjiListItemDto>(
                 kanjiPage.Items.Select(k => new KanjiListItemDto
                 {
                     Id = k.Id,
                     Character = k.Character,
-                    PrimaryMeaning = k.Meanings?.FirstOrDefault(m => m.IsPrimary)?.Value
+                    PrimaryMeaning = k.Meanings?.FirstOrDefault(m => m.IsPrimary)?.Value,
+                    IsLearned = learnedKanjiIds.Contains(k.Id)
                 }).ToList(),
                 kanjiPage.PageIndex,
                 kanjiPage.TotalPages

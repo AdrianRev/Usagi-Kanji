@@ -33,6 +33,14 @@ namespace Infrastructure.Repositories
             return new PaginatedList<Kanji>(items, pageIndex, totalPages);
         }
 
+        public async Task<IReadOnlyList<Guid>> GetLearnedKanjiIdsForUserAsync(Guid userId, IReadOnlyList<Guid> kanjiIds, CancellationToken ct = default)
+        {
+            return await _context.UserKanjis
+                .Where(uk => uk.UserId == userId && kanjiIds.Contains(uk.KanjiId))
+                .Select(uk => uk.KanjiId)
+                .ToListAsync(ct);
+        }
+
         public async Task<Kanji?> GetKanjiWithUserDetailsAsync(Guid kanjiId, Guid userId)
         {
             return await _context.Kanji

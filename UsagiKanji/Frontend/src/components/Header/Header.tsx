@@ -10,7 +10,6 @@ const Header: React.FC = () => {
     const [showLogoutToast, setShowLogoutToast] = useState(false);
     const [isDark, setIsDark] = useState(document.documentElement.classList.contains("dark"));
 
-    // Sync state with actual class
     useEffect(() => {
         const observer = new MutationObserver(() => {
             setIsDark(document.documentElement.classList.contains("dark"));
@@ -40,12 +39,32 @@ const Header: React.FC = () => {
         <>
             <header className={styles.header}>
                 <div className={styles.container}>
-                    {/* Logo */}
-                    <Link to={token ? "/main" : "/"} className={styles.logo}>
-                        <span className={styles.logoIcon}>兔</span>
-                    </Link>
+                    <nav className={styles.navLeft}>
+                        <Link to={token ? "/main" : "/"} className={styles.logo}>
+                            <span className={styles.logoIcon}>兔</span>
+                        </Link>
+                        {!token ? (
+                            <>
 
-                    {/* Desktop Nav */}
+                            </>
+                        ) : (
+                            <>
+                                <Link
+                                    to="/study"
+                                    className={`${styles.navLink} ${isActive("/study") ? styles.active : ""}`}
+                                >
+                                    Study
+                                </Link>
+                                <Link
+                                    to="/review"
+                                    className={`${styles.navLink} ${isActive("/review") ? styles.active : ""}`}
+                                >
+                                    Review
+                                </Link>
+                            </>
+                        )}
+                        
+                    </nav>
                     <nav className={styles.nav}>
                         {!token ? (
                             <>
@@ -53,20 +72,27 @@ const Header: React.FC = () => {
                                     to="/login"
                                     className={`${styles.navLink} ${isActive("/login") ? styles.active : ""}`}
                                 >
-                                    Login
+                                    Log in
                                 </Link>
                                 <Link
                                     to="/signup"
                                     className={`${styles.navLink} ${isActive("/signup") ? styles.active : ""}`}
                                 >
-                                    Sign Up
+                                    Sign up
                                 </Link>
                             </>
                         ) : (
                             <>
-                                <button onClick={handleLogout} className={styles.logoutBtn}>
+                                <button onClick={handleLogout} className={styles.button}>
                                     Logout
                                 </button>
+
+                                <Link
+                                    to="/settings"
+                                    className={`${styles.navLink} ${isActive("/settings") ? styles.active : ""}`}
+                                >
+                                        ⚙️
+                                </Link>
                             </>
                         )}
 
@@ -106,12 +132,13 @@ const Header: React.FC = () => {
                                 <button onClick={handleLogout} className={styles.mobileLogout}>
                                     Logout
                                 </button>
+
                             </>
                         )}
 
                         {/* DARK MODE TOGGLE – Mobile */}
                         <button onClick={toggleDarkMode} className={styles.themeToggle}>
-                            {isDark ? "Light" : "Dark"}
+                            {isDark ? "🌞" : "🌛"}
                         </button>
                     </div>
                 )}

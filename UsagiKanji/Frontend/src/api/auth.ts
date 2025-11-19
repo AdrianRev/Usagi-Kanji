@@ -1,13 +1,24 @@
-import axios from 'axios';
-import type { SignUpRequest, LoginRequest, LoginResponse } from '../types/auth';
+﻿import api from "./axiosInstance";
+import type { SignUpApiRequest, LoginRequest, LoginResponse } from '../types/auth';
 
-const API_BASE_URL = 'http://localhost:5261/api';
-
-export const signUp = async (data: SignUpRequest) => {
-    return axios.post(`${API_BASE_URL}/auth/signup`, data);
+export const signUp = async (data: SignUpApiRequest) => {
+    return api.post("/auth/signup", data);
 };
 
 export const login = async (data: LoginRequest): Promise<LoginResponse> => {
-    const response = await axios.post<LoginResponse>(`${API_BASE_URL}/auth/login`, data);
+    const response = await api.post<LoginResponse>("/auth/login", data);
+
+    if (response.data.token) {
+        localStorage.setItem("access_token", response.data.token);
+    }
+
     return response.data;
+};
+
+export const logout = () => {
+    localStorage.removeItem("access_token");
+};
+
+export const isLoggedIn = (): boolean => {
+    return !!localStorage.getItem("access_token");
 };

@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import styles from "./LoginPage.module.scss";
 import { login as apiLogin } from "../../api/auth";
 import type { LoginRequest } from "../../types/auth";
+import useWebsiteTitle from "../../hooks/useWebsiteTitle";
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate();
-
+    useWebsiteTitle("Log in - UsagiKanji");
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [loginData, setLoginData] = useState<LoginRequest>({
         usernameOrEmail: "",
@@ -20,6 +21,7 @@ const LoginPage: React.FC = () => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setLoginData((prev) => ({ ...prev, [name]: value }));
+        if (error) setError("");
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -29,10 +31,27 @@ const LoginPage: React.FC = () => {
 
         try {
             const res = await apiLogin(loginData);
-            localStorage.setItem("token", res.token);
+
+            const token =
+                res?.token ??
+                res?.data?.token ??
+                res?.accessToken ??
+                res?.jwt;
+
+            if (!token) {
+                setError("Login failed: No token received");
+                return;
+            }
+
+            localStorage.setItem("token", token);
             navigate("/main");
         } catch (err: any) {
-            setError(err.response?.data?.message || "Login failed");
+            const serverError =
+                err.response?.data?.detail ||
+                err.response?.data?.message ||
+                "Login failed. Please try again.";
+
+            setError(serverError);
         } finally {
             setIsLoading(false);
         }
@@ -41,7 +60,7 @@ const LoginPage: React.FC = () => {
     return (
         <div className={styles.mainContainer}>
             <div className={styles.formCard}>
-                <h2 className={styles.title}>Sign In</h2>
+                <h2 className={styles.title}>Log in</h2>
 
                 {/* Error toast */}
                 {error && (
@@ -96,7 +115,7 @@ const LoginPage: React.FC = () => {
                         className={styles.submitBtn}
                         aria-busy={isLoading}
                     >
-                        {isLoading ? <span className={styles.spinner}>⟳</span> : "Sign In"}
+                        {isLoading ? <span className={styles.spinner}>⟳</span> : "Log in"}
                     </button>
                 </form>
             </div>
