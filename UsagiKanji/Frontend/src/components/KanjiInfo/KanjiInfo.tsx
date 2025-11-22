@@ -5,10 +5,12 @@ import styles from "./KanjiInfo.module.scss";
 interface KanjiInfoProps {
     kanji: KanjiDetail;
     onSave: (keyword: string, notes: string) => Promise<void>;
-    onNavigate: (direction: "prev" | "next") => void; // callback for navigation
+    onNavigate: (direction: "prev" | "next") => void;
+    prevExists: boolean;
+    nextExists: boolean;
 }
 
-const KanjiInfo: React.FC<KanjiInfoProps> = ({ kanji, onSave, onNavigate }) => {
+const KanjiInfo: React.FC<KanjiInfoProps> = ({ kanji, onSave, onNavigate, prevExists, nextExists }) => {
     const [keyword, setKeyword] = useState(kanji.keyword || "");
     const [notes, setNotes] = useState(kanji.notes || "");
     const [saving, setSaving] = useState(false);
@@ -28,7 +30,6 @@ const KanjiInfo: React.FC<KanjiInfoProps> = ({ kanji, onSave, onNavigate }) => {
         }
     };
 
-    // Determine the current kanji index for display
     const sortBy = localStorage.getItem("kanji-sort-by") || "heisig6";
     const kanjiIndex =
         sortBy === "grade"
@@ -43,11 +44,7 @@ const KanjiInfo: React.FC<KanjiInfoProps> = ({ kanji, onSave, onNavigate }) => {
 
     return (
         <div className={styles.wrapper}>
-            {/* Left column */}
             <div className={styles.left}>
-                {/* Navigation bar above keyword */}
-                
-
                 <input
                     type="text"
                     className={styles.keywordInput}
@@ -62,35 +59,30 @@ const KanjiInfo: React.FC<KanjiInfoProps> = ({ kanji, onSave, onNavigate }) => {
                     <label>Meanings:</label>
                     <div className={styles.meanings}>
                         <strong>{kanji.meanings.find(m => m.isPrimary)?.value}</strong>
-                        {kanji.meanings
-                            .filter(m => !m.isPrimary)
-                            .map(m => `, ${m.value}`)}
+                        {kanji.meanings.filter(m => !m.isPrimary).map(m => `, ${m.value}`)}
                     </div>
                 </div>
-
             </div>
 
-            {/* Right column */}
             <div className={styles.right}>
                 <div className={styles.field}>
                     <div className={styles.kanjiNavigation}>
                         <button
                             onClick={() => onNavigate("prev")}
                             className={styles.navButton}
+                            disabled={!prevExists}
                         >
                             &lt;
                         </button>
-                        <span className={styles.kanjiIndex}>
-                            {kanjiIndex || "-"}
-                        </span>
+                        <span className={styles.kanjiIndex}>{kanjiIndex || "-"}</span>
                         <button
                             onClick={() => onNavigate("next")}
                             className={styles.navButton}
+                            disabled={!nextExists}
                         >
                             &gt;
                         </button>
                     </div>
-                    <label htmlFor="notes"></label>
                     <textarea
                         id="notes"
                         value={notes}

@@ -2,12 +2,13 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./LoginPage.module.scss";
 import { login as apiLogin } from "../../api/auth";
-import type { LoginRequest } from "../../types/auth";
+import type { LoginRequest, LoginResponse } from "../../types/auth";
 import useWebsiteTitle from "../../hooks/useWebsiteTitle";
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate();
     useWebsiteTitle("Log in - UsagiKanji");
+
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [loginData, setLoginData] = useState<LoginRequest>({
         usernameOrEmail: "",
@@ -30,26 +31,24 @@ const LoginPage: React.FC = () => {
         setIsLoading(true);
 
         try {
-            const res = await apiLogin(loginData);
+            const loginResponse: LoginResponse = await apiLogin(loginData);
 
-            const token =
-                res?.token ??
-                res?.data?.token ??
-                res?.accessToken ??
-                res?.jwt;
+            const token = loginResponse.token;
 
             if (!token) {
-                setError("Login failed: No token received");
+                setError("Login failed: Server did not return a token");
                 return;
             }
 
-            localStorage.setItem("token", token);
+            await apiLogin(loginData);
             navigate("/main");
         } catch (err: any) {
             const serverError =
                 err.response?.data?.detail ||
                 err.response?.data?.message ||
-                "Login failed. Please try again.";
+                err.response?.data?.error ||
+                err.message ||
+                "Login failed. Please check your credentials and try again.";
 
             setError(serverError);
         } finally {
@@ -62,7 +61,6 @@ const LoginPage: React.FC = () => {
             <div className={styles.formCard}>
                 <h2 className={styles.title}>Log in</h2>
 
-                {/* Error toast */}
                 {error && (
                     <div className={styles.errorToast} role="alert">
                         {error}
@@ -70,7 +68,6 @@ const LoginPage: React.FC = () => {
                 )}
 
                 <form onSubmit={handleSubmit} className={styles.form}>
-                    {/* Username / Email */}
                     <div className={styles.inputGroup}>
                         <input
                             type="text"
@@ -80,12 +77,10 @@ const LoginPage: React.FC = () => {
                             required
                             autoComplete="username"
                             className={styles.input}
-                            id="usernameOrEmail"
                             placeholder="Username or Email"
                         />
                     </div>
 
-                    {/* Password */}
                     <div className={styles.inputGroup}>
                         <input
                             type={passwordVisible ? "text" : "password"}
@@ -95,7 +90,6 @@ const LoginPage: React.FC = () => {
                             required
                             autoComplete="current-password"
                             className={styles.input}
-                            id="password"
                             placeholder="Password"
                         />
                         <button
@@ -108,14 +102,12 @@ const LoginPage: React.FC = () => {
                         </button>
                     </div>
 
-                    {/* Submit */}
                     <button
                         type="submit"
                         disabled={isLoading}
                         className={styles.submitBtn}
-                        aria-busy={isLoading}
                     >
-                        {isLoading ? <span className={styles.spinner}>⟳</span> : "Log in"}
+                        {isLoading ? <span className={styles.spinner}>Loading</span> : "Log in"}
                     </button>
                 </form>
             </div>

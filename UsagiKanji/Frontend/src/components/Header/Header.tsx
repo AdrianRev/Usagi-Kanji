@@ -5,7 +5,7 @@ import styles from "./Header.module.scss";
 const Header: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("access_token");
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [showLogoutToast, setShowLogoutToast] = useState(false);
     const [isDark, setIsDark] = useState(document.documentElement.classList.contains("dark"));
@@ -19,7 +19,7 @@ const Header: React.FC = () => {
     }, []);
 
     const handleLogout = () => {
-        localStorage.removeItem("token");
+        localStorage.removeItem("access_token");
         setShowLogoutToast(true);
         setTimeout(() => {
             setShowLogoutToast(false);

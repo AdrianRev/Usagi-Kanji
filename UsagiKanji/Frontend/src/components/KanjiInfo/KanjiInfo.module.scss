@@ -147,3 +147,14 @@
     background-color: var(--card-bg);
     color: var(--accent);
 }
+.navButton:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+    color: var(--text-muted);
+    border-color: var(--border);
+}
+
+.navButton:disabled .navButtonText {
+    color: var(--text-muted);
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { kanjiApi } from "../../api/kanji";
 import type { KanjiListItem, PaginatedList } from "../../types/kanji";
 import styles from "./KanjiListPage.module.scss";
