@@ -1,0 +1,27 @@
+.readingsWrapper {
+    width: 100%;
+    text-align: center;
+    margin-top: 1rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--border);
+}
+
+h3 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+}
+
+.list {
+    font-size: 1.3rem;
+    line-height: 1.7;
+    color: var(--text-primary);
+
+    strong {
+        color: var(--accent);
+        font-weight: 700;
+    }
+}

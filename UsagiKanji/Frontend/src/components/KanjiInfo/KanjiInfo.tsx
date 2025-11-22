@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import type { KanjiDetail } from "../../types/kanji";
 import styles from "./KanjiInfo.module.scss";
+import KanjiReadings from "../KanjiReadings/KanjiReadings";
+import KanjiVocabulary from "../KanjiVocabulary/KanjiVocabulary";
+
 
 interface KanjiInfoProps {
     kanji: KanjiDetail;
@@ -62,6 +65,7 @@ const KanjiInfo: React.FC<KanjiInfoProps> = ({ kanji, onSave, onNavigate, prevEx
                         {kanji.meanings.filter(m => !m.isPrimary).map(m => `, ${m.value}`)}
                     </div>
                 </div>
+                <KanjiReadings readings={kanji.readings} />
             </div>
 
             <div className={styles.right}>
@@ -99,6 +103,7 @@ const KanjiInfo: React.FC<KanjiInfoProps> = ({ kanji, onSave, onNavigate, prevEx
                             {saving ? "Saving..." : "Save"}
                         </button>
                     </div>
+                    <KanjiVocabulary vocabulary={kanji.vocabulary} />
                 </div>
             </div>
         </div>
