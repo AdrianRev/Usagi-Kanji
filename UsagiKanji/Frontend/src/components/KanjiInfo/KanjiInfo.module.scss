@@ -1,21 +1,21 @@
 ﻿.wrapper {
-    display: flex;
+    display: grid;
+    grid-template-columns: 300px 1fr;
     gap: 2rem;
     padding: 1rem;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
 }
 
 .left {
-    flex: 0 0 300px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1.8rem;
-
-    @media (max-width: 768px) {
-        flex: none;
-        width: 100%;
-    }
 }
+
 
 .keywordInput {
     width: 100%;
@@ -34,6 +34,7 @@
     border-color: var(--accent);
     outline: none;
 }
+
 .kanjiCharacter {
     font-size: 6rem;
     color: var(--text-primary);
@@ -67,10 +68,11 @@
 
 
 .right {
-  flex: 1;
-  min-width: 340px;
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 0;
+    min-height: 100%;
 }
 
 .notesTextarea {
@@ -110,6 +112,7 @@
     opacity: 0.6;
     cursor: not-allowed;
 }
+
 .kanjiNavigation {
     display: flex;
     justify-content: flex-end;
@@ -147,6 +150,7 @@
     background-color: var(--card-bg);
     color: var(--accent);
 }
+
 .navButton:disabled {
     opacity: 0.35;
     cursor: not-allowed;
@@ -157,4 +161,32 @@
 
 .navButton:disabled .navButtonText {
     color: var(--text-muted);
+}
+
+.kanjiStats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-size: 1rem;
+    color: var(--text-primary);
+    align-items: center;
+
+    div {
+        display: flex;
+        gap: 0.25rem;
+
+        strong {
+            font-weight: 600;
+            color: var(--accent);
+        }
+    }
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
 }

@@ -34,16 +34,16 @@ const KanjiInfo: React.FC<KanjiInfoProps> = ({ kanji, onSave, onNavigate, prevEx
     };
 
     const sortBy = localStorage.getItem("kanji-sort-by") || "heisig6";
-    const kanjiIndex =
-        sortBy === "grade"
-            ? kanji.sortIndexGrade
-            : sortBy === "jlptlevel"
-                ? kanji.sortIndexJLPT
-                : sortBy === "frequency"
-                    ? kanji.frequencyRank
-                    : sortBy === "heisig6"
-                        ? kanji.heisig6Number
-                        : kanji.heisigNumber || 0;
+    const kanjiIndex = (() => {
+        switch (sortBy) {
+            case "grade": return kanji.sortIndex_Grade;
+            case "jlptlevel": return kanji.sortIndex_JLPT;
+            case "frequency": return kanji.frequencyRank;
+            case "heisig6": return kanji.heisig6Number;
+            case "heisig": return kanji.heisigNumber;
+            default: return undefined;
+        }
+    })();
 
     return (
         <div className={styles.wrapper}>
@@ -66,6 +66,20 @@ const KanjiInfo: React.FC<KanjiInfoProps> = ({ kanji, onSave, onNavigate, prevEx
                     </div>
                 </div>
                 <KanjiReadings readings={kanji.readings} />
+                <div className={styles.kanjiStats}>
+                    <div>
+                        <strong>Strokes: </strong> {kanji.strokeCount}
+                    </div>
+                    <div>
+                        <strong>Grade:</strong> {kanji.grade || "-"}
+                    </div>
+                    <div>
+                        <strong>JLPT exam level:</strong>N{kanji.jlptLevel || "-"}
+                    </div>
+                    <div>
+                        <strong>Frequency Rank:</strong> {kanji.frequencyRank || "-"}
+                    </div>
+                </div>
             </div>
 
             <div className={styles.right}>

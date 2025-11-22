@@ -17,7 +17,7 @@ export interface KanjiListParams {
     sortBy?: string;
 }
 
-export type ReadingType = "Onyomi" | "Kunyomi" | "Nanori";
+export type ReadingType = "Onyomi" | "Kunyomi";
 
 export interface Reading {
     value: string;
@@ -41,9 +41,9 @@ export interface KanjiDetail {
     character: string;
     strokeCount: number;
     grade: number;
-    sortIndexGrade?: number;
+    sortIndex_Grade?: number;
     jlptLevel?: number;
-    sortIndexJLPT?: number;
+    sortIndex_JLPT?: number;
     frequencyRank?: number;
     heisigNumber?: number;
     heisig6Number?: number;
