@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { kanjiApi } from "../../api/kanji";
 import type { KanjiListItem, PaginatedList } from "../../types/kanji";
 import styles from "./KanjiListPage.module.scss";
-
+import { useNavigate } from "react-router-dom";
 
 export default function KanjiListPage() {
     const [kanji, setKanji] = useState<KanjiListItem[]>([]);
     const [pageIndex, setPageIndex] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [sortBy, setSortBy] = useState<string>("");
+    const [sortBy, setSortBy] = useState<string>(() => localStorage.getItem("kanji-sort-by") || "grade");
     const [loading, setLoading] = useState(false);
+
+    const navigate = useNavigate();
 
     const loadKanji = async () => {
         setLoading(true);
@@ -29,6 +31,14 @@ export default function KanjiListPage() {
     useEffect(() => {
         loadKanji();
     }, [pageIndex, sortBy]);
+
+    useEffect(() => {
+        localStorage.setItem("kanji-sort-by", sortBy);
+    }, [sortBy]);
+
+    const handleKanjiClick = (id: string) => {
+        navigate(`/study/${id}`);
+    };
 
     return (
         <div className={styles.wrapper}>
@@ -51,18 +61,20 @@ export default function KanjiListPage() {
                 <p className={styles.loading}>Loading...</p>
             ) : (
                 <div className={styles.grid}>
-                        {kanji.map((k, index) => (
-                            <div
-                                key={k.id}
-                                className={`${styles.card} ${k.isLearned ? styles.learned : ''}`}
-                            >
-                                <div className={styles.id}>
-                                    {(pageIndex - 1) * 25 + index + 1}
-                                </div>
-                                <div className={styles.character}>{k.character}</div>
-                                <div className={styles.meaning}>{k.primaryMeaning}</div>
+                    {kanji.map((k, index) => (
+                        <div
+                            key={k.id}
+                            className={`${styles.card} ${k.isLearned ? styles.learned : ''}`}
+                            onClick={() => handleKanjiClick(k.id)}
+                            style={{ cursor: "pointer" }}
+                        >
+                            <div className={styles.id}>
+                                {(pageIndex - 1) * 25 + index + 1}
                             </div>
-                        ))}
+                            <div className={styles.character}>{k.character}</div>
+                            <div className={styles.meaning}>{k.primaryMeaning}</div>
+                        </div>
+                    ))}
                 </div>
             )}
 

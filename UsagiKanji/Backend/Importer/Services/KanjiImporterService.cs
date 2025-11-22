@@ -79,8 +79,6 @@ namespace Importer.Services
                         }
                     }
                 }
-
-                // Add Nanori readings
                 if (entry.Nanori != null)
                 {
                     foreach (var nanori in entry.Nanori)

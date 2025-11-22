@@ -63,6 +63,48 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(uk => uk.UserId == userId && uk.KanjiId == kanjiId);
         }
 
+        public async Task<Kanji?> GetNeighborKanjiAsync(Guid kanjiId, string sortBy, bool next)
+        {
+            var current = await _context.Kanji.FirstOrDefaultAsync(k => k.Id == kanjiId);
+            if (current == null) return null;
+
+            IQueryable<Kanji> query = _context.Kanji.AsNoTracking();
+
+            switch (sortBy.ToLower())
+            {
+                case "grade":
+                    query = next
+                        ? query.Where(k => k.SortIndex_Grade > current.SortIndex_Grade).OrderBy(k => k.SortIndex_Grade)
+                        : query.Where(k => k.SortIndex_Grade < current.SortIndex_Grade).OrderByDescending(k => k.SortIndex_Grade);
+                    break;
+                case "jlptlevel":
+                    query = next
+                        ? query.Where(k => k.SortIndex_JLPT > current.SortIndex_JLPT).OrderBy(k => k.SortIndex_JLPT)
+                        : query.Where(k => k.SortIndex_JLPT < current.SortIndex_JLPT).OrderByDescending(k => k.SortIndex_JLPT);
+                    break;
+                case "frequency":
+                    query = next
+                        ? query.Where(k => k.FrequencyRank > current.FrequencyRank).OrderBy(k => k.FrequencyRank)
+                        : query.Where(k => k.FrequencyRank < current.FrequencyRank).OrderByDescending(k => k.FrequencyRank);
+                    break;
+                case "heisig":
+                    query = next
+                        ? query.Where(k => k.HeisigNumber > current.HeisigNumber).OrderBy(k => k.HeisigNumber)
+                        : query.Where(k => k.HeisigNumber < current.HeisigNumber).OrderByDescending(k => k.HeisigNumber);
+                    break;
+                case "heisig6":
+                default:
+                    query = next
+                        ? query.Where(k => k.Heisig6Number > current.Heisig6Number).OrderBy(k => k.Heisig6Number)
+                        : query.Where(k => k.Heisig6Number < current.Heisig6Number).OrderByDescending(k => k.Heisig6Number);
+                    break;
+            }
+
+            return await query.FirstOrDefaultAsync();
+        }
+
+
+
         public async Task AddAsync(UserKanji userKanji)
         {
             await _context.UserKanjis.AddAsync(userKanji);

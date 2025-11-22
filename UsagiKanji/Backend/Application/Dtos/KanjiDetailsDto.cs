@@ -2,9 +2,12 @@
 {
     public class KanjiDetailsDto
     {
+        public Guid Id { get; set; }
         public string Character { get; set; } = string.Empty;
         public int? StrokeCount { get; set; }
         public int? Grade { get; set; }
+        public int? SortIndex_Grade { get; set; }
+        public int? SortIndex_JLPT { get; set; }
         public int? JLPTLevel { get; set; }
         public int? FrequencyRank { get; set; }
         public int? HeisigNumber { get; set; }

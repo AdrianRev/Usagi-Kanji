@@ -57,10 +57,13 @@ namespace Application.Services
 
             return new KanjiDetailsDto
             {
+                Id = kanjiId,
                 Character = kanji.Character,
                 StrokeCount = kanji.StrokeCount,
                 Grade = kanji.Grade,
+                SortIndex_Grade = kanji.SortIndex_Grade,
                 JLPTLevel = kanji.JLPTLevel,
+                SortIndex_JLPT = kanji.SortIndex_JLPT,
                 FrequencyRank = kanji.FrequencyRank,
                 HeisigNumber = kanji.HeisigNumber,
                 Heisig6Number = kanji.Heisig6Number,
@@ -124,6 +127,54 @@ namespace Application.Services
 
             await _kanjiRepository.SaveChangesAsync();
             return Result.Ok();
+        }
+
+
+        public async Task<KanjiDetailsDto?> GetNeighborKanjiAsync(Guid kanjiId, Guid userId, string sortBy, bool next)
+        {
+            var neighbor = await _kanjiRepository.GetNeighborKanjiAsync(kanjiId, sortBy, next);
+            if (neighbor == null) return null;
+
+            var userKanji = neighbor.UserKanjis?.FirstOrDefault(uk => uk.UserId == userId);
+
+            var vocabularies = neighbor.VocabularyKanjiCharacters?
+                .Select(vkc => vkc.KanjiForm?.Vocabulary)
+                .Where(v => v != null)
+                .Distinct()
+                .ToList() ?? new List<Domain.Entities.Vocabulary>();
+
+            return new KanjiDetailsDto
+            {
+                Id = neighbor.Id,
+                Character = neighbor.Character,
+                StrokeCount = neighbor.StrokeCount,
+                Grade = neighbor.Grade,
+                SortIndex_Grade = neighbor.SortIndex_Grade,
+                JLPTLevel = neighbor.JLPTLevel,
+                SortIndex_JLPT = neighbor.SortIndex_JLPT,
+                FrequencyRank = neighbor.FrequencyRank,
+                HeisigNumber = neighbor.HeisigNumber,
+                Heisig6Number = neighbor.Heisig6Number,
+                Readings = neighbor.Readings?.Select(r => new ReadingDto { Value = r.Value, Type = r.Type.ToString() }).ToList() ?? new List<ReadingDto>(),
+                Meanings = neighbor.Meanings?.Select(m => new MeaningDto { Value = m.Value, IsPrimary = m.IsPrimary }).ToList() ?? new List<MeaningDto>(),
+                Notes = userKanji?.Notes,
+                Keyword = userKanji?.Keyword,
+                IsLearned = userKanji != null,
+                Vocabulary = vocabularies.Select(v =>
+                {
+                    var mainForm = v?.KanjiForms?.FirstOrDefault();
+                    var kanaReadings = v?.KanaReadings?
+                        .Where(k => (k.AppliesToKanji == "*" || k.AppliesToKanji.Contains(neighbor.Character)) && k.Common)
+                        .Select(k => k.Text).ToList() ?? new List<string>();
+                    return new VocabularyDto
+                    {
+                        Text = mainForm?.Text ?? string.Empty,
+                        Common = mainForm?.Common ?? false,
+                        KanaReadings = kanaReadings,
+                        Glosses = v?.Glosses?.Select(g => g.Text).ToList() ?? new List<string>()
+                    };
+                }).ToList()
+            };
         }
 
     }

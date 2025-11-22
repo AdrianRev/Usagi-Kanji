@@ -6,6 +6,10 @@ export interface SignUpRequest {
 }
 export type SignUpApiRequest = Omit<SignUpRequest, 'confirmPassword'>;
 
+export interface SignUpResponse {
+	token: string;
+}
+
 export interface LoginRequest {
 	usernameOrEmail: string;
 	password: string;

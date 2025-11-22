@@ -9,6 +9,7 @@ namespace Domain.Repositories
         Task<IReadOnlyList<Guid>> GetLearnedKanjiIdsForUserAsync(Guid userId, IReadOnlyList<Guid> kanjiIds, CancellationToken ct = default);
         Task<Kanji?> GetKanjiWithUserDetailsAsync(Guid kanjiId, Guid userId);
         Task<UserKanji?> GetUserKanjiAsync(Guid userId, Guid kanjiId);
+        Task<Kanji?> GetNeighborKanjiAsync(Guid kanjiId, string sortBy, bool next);
         Task SaveChangesAsync();
         Task AddAsync(UserKanji userKanji);
         Task UpdateAsync(UserKanji userKanji);

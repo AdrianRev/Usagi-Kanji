@@ -4,10 +4,10 @@ import useWebsiteTitle from "../../hooks/useWebsiteTitle";
 
 const MainPage: React.FC = () => {
     useWebsiteTitle("UsagiKanji");
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('access_token');
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
+        localStorage.removeItem('access_token');
         window.location.href = '/login';
     };
 

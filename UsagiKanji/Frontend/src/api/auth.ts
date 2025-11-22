@@ -1,8 +1,14 @@
 ﻿import api from "./axiosInstance";
-import type { SignUpApiRequest, LoginRequest, LoginResponse } from '../types/auth';
+import type { SignUpApiRequest, SignUpResponse, LoginRequest, LoginResponse } from '../types/auth';
 
-export const signUp = async (data: SignUpApiRequest) => {
-    return api.post("/auth/signup", data);
+export const signUp = async (data: SignUpApiRequest): Promise<SignUpResponse> => {
+    const response = await api.post<SignUpResponse>("/auth/signup", data);
+
+    if (response.data.token) {
+        localStorage.setItem("access_token", response.data.token);
+    }
+
+    return response.data;
 };
 
 export const login = async (data: LoginRequest): Promise<LoginResponse> => {

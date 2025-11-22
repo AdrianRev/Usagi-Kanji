@@ -10,7 +10,7 @@ const SignUpPage: React.FC = () => {
     useWebsiteTitle("Sign up - UsagiKanji");
     const [passwordVisible, setPasswordVisible] = useState(false);
 
-    const [formData, setFormData] = useState<SignUpRequest>({
+    const [signUpData, setSignUpData] = useState<SignUpRequest>({
         username: "",
         email: "",
         password: "",
@@ -23,7 +23,7 @@ const SignUpPage: React.FC = () => {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        setSignUpData((prev) => ({ ...prev, [name]: value }));
         if (error) setError("");
     };
 
@@ -52,20 +52,20 @@ const SignUpPage: React.FC = () => {
         setError("");
         setIsLoading(true);
 
-        const userError = validateUsername(formData.username);
+        const userError = validateUsername(signUpData.username);
         if (userError) {
             setError(userError);
             setIsLoading(false);
             return;
         }
 
-        if (formData.password !== formData.confirmPassword) {
+        if (signUpData.password !== signUpData.confirmPassword) {
             setError("Passwords do not match");
             setIsLoading(false);
             return;
         }
 
-        const pwdError = validatePassword(formData.password);
+        const pwdError = validatePassword(signUpData.password);
         if (pwdError) {
             setError(pwdError);
             setIsLoading(false);
@@ -73,21 +73,24 @@ const SignUpPage: React.FC = () => {
         }
 
         const payload: SignUpApiRequest = {
-            username: formData.username,
-            email: formData.email,
-            password: formData.password,
+            username: signUpData.username,
+            email: signUpData.email,
+            password: signUpData.password,
         };
 
         try {
             const res = await apiSignup(payload);
-            const token = res?.token ?? res?.data?.token ?? res?.accessToken ?? res?.jwt;
+
+            const token = res.token;
+
             if (!token) {
                 setError("Sign-up succeeded but no token received");
                 setIsLoading(false);
                 return;
             }
 
-            localStorage.setItem("token", token);
+            await apiSignup(signUpData);
+
             navigate("/main");
         } catch (err: any) {
             const serverMsg =
@@ -100,6 +103,8 @@ const SignUpPage: React.FC = () => {
         } finally {
             setIsLoading(false);
         }
+
+
     };
 
     return (
@@ -118,7 +123,7 @@ const SignUpPage: React.FC = () => {
                         <input
                             type="text"
                             name="username"
-                            value={formData.username}
+                            value={signUpData.username}
                             onChange={handleInputChange}
                             required
                             autoComplete="username"
@@ -132,7 +137,7 @@ const SignUpPage: React.FC = () => {
                         <input
                             type="email"
                             name="email"
-                            value={formData.email}
+                            value={signUpData.email}
                             onChange={handleInputChange}
                             required
                             autoComplete="email"
@@ -146,7 +151,7 @@ const SignUpPage: React.FC = () => {
                         <input
                             type={passwordVisible ? "text" : "password"}
                             name="password"
-                            value={formData.password}
+                            value={signUpData.password}
                             onChange={handleInputChange}
                             required
                             autoComplete="new-password"
@@ -158,7 +163,7 @@ const SignUpPage: React.FC = () => {
                             type="button"
                             onClick={togglePasswordVisibility}
                             className={styles.toggleBtn}
-                            aria-label={passwordVisible ? "Show password" : "Hide password"}
+                            aria-label={passwordVisible ? "Hide password" : "Show password"}
                         >
                             {passwordVisible ? "🙈" : "👁️"}
                         </button>
@@ -168,7 +173,7 @@ const SignUpPage: React.FC = () => {
                         <input
                             type={passwordVisible ? "text" : "password"}
                             name="confirmPassword"
-                            value={formData.confirmPassword}
+                            value={signUpData.confirmPassword}
                             onChange={handleInputChange}
                             required
                             autoComplete="new-password"
