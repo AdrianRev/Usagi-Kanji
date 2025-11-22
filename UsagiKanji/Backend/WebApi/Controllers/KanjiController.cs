@@ -60,5 +60,19 @@ namespace WebAPI.Controllers
 
             return result.IsFailed ? BadRequest(result.Errors.Select(e => e.Message)) : Ok("UserKanji updated successfully.");
         }
+        [HttpGet("{kanjiId}/neighbor")]
+        public async Task<IActionResult> GetNeighborKanji(Guid kanjiId, [FromQuery] string sortBy, [FromQuery] bool next = true)
+        {
+            var userId = _currentUser.UserId;
+            if (userId == null)
+                return Unauthorized();
+
+            var neighbor = await _kanjiService.GetNeighborKanjiAsync(kanjiId, userId.Value, sortBy, next);
+
+            if (neighbor == null)
+                return NotFound();
+
+            return Ok(neighbor);
+        }
     }
 }

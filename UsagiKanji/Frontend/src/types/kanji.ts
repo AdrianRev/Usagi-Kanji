@@ -41,7 +41,9 @@ export interface KanjiDetail {
     character: string;
     strokeCount: number;
     grade: number;
+    sortIndexGrade?: number;
     jlptLevel?: number;
+    sortIndexJLPT?: number;
     frequencyRank?: number;
     heisigNumber?: number;
     heisig6Number?: number;

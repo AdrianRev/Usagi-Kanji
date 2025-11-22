@@ -15,4 +15,14 @@ export const kanjiApi = {
         const response = await api.post(`/kanji/${id}`, payload);
         return response.data;
     },
+    getNextOrPrev: async (id: string, direction: "prev" | "next", sortBy: string) => {
+        const response = await api.get<KanjiDetail>(`/kanji/${id}/neighbor`, {
+            params: {
+                sortBy,
+                next: direction === "next"
+            }
+        });
+        return response.data;
+    },
+
 };

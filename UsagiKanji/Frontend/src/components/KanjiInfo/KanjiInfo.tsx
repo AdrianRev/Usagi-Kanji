@@ -5,9 +5,10 @@ import styles from "./KanjiInfo.module.scss";
 interface KanjiInfoProps {
     kanji: KanjiDetail;
     onSave: (keyword: string, notes: string) => Promise<void>;
+    onNavigate: (direction: "prev" | "next") => void; // callback for navigation
 }
 
-const KanjiInfo: React.FC<KanjiInfoProps> = ({ kanji, onSave }) => {
+const KanjiInfo: React.FC<KanjiInfoProps> = ({ kanji, onSave, onNavigate }) => {
     const [keyword, setKeyword] = useState(kanji.keyword || "");
     const [notes, setNotes] = useState(kanji.notes || "");
     const [saving, setSaving] = useState(false);
@@ -27,10 +28,26 @@ const KanjiInfo: React.FC<KanjiInfoProps> = ({ kanji, onSave }) => {
         }
     };
 
+    // Determine the current kanji index for display
+    const sortBy = localStorage.getItem("kanji-sort-by") || "heisig6";
+    const kanjiIndex =
+        sortBy === "grade"
+            ? kanji.sortIndexGrade
+            : sortBy === "jlptlevel"
+                ? kanji.sortIndexJLPT
+                : sortBy === "frequency"
+                    ? kanji.frequencyRank
+                    : sortBy === "heisig6"
+                        ? kanji.heisig6Number
+                        : kanji.heisigNumber || 0;
+
     return (
         <div className={styles.wrapper}>
             {/* Left column */}
             <div className={styles.left}>
+                {/* Navigation bar above keyword */}
+                
+
                 <input
                     type="text"
                     className={styles.keywordInput}
@@ -53,8 +70,26 @@ const KanjiInfo: React.FC<KanjiInfoProps> = ({ kanji, onSave }) => {
 
             </div>
 
+            {/* Right column */}
             <div className={styles.right}>
                 <div className={styles.field}>
+                    <div className={styles.kanjiNavigation}>
+                        <button
+                            onClick={() => onNavigate("prev")}
+                            className={styles.navButton}
+                        >
+                            &lt;
+                        </button>
+                        <span className={styles.kanjiIndex}>
+                            {kanjiIndex || "-"}
+                        </span>
+                        <button
+                            onClick={() => onNavigate("next")}
+                            className={styles.navButton}
+                        >
+                            &gt;
+                        </button>
+                    </div>
                     <label htmlFor="notes"></label>
                     <textarea
                         id="notes"
@@ -74,8 +109,6 @@ const KanjiInfo: React.FC<KanjiInfoProps> = ({ kanji, onSave }) => {
                     </div>
                 </div>
             </div>
-
-
         </div>
     );
 };
