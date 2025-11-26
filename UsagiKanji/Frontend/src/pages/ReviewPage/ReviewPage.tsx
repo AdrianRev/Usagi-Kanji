@@ -4,12 +4,13 @@ import { reviewApi } from "../../api/review";
 import type { DueKanji, KanjiReviewItem } from "../../types/review";
 import Flashcard from "../../components/Flashcard/Flashcard";
 import styles from "./ReviewPage.module.scss";
-
+import useWebsiteTitle from "../../hooks/useWebsiteTitle";
 interface ReviewHistoryItem extends KanjiReviewItem {
     kanji: DueKanji;
 }
 
 export default function ReviewPage() {
+    useWebsiteTitle("Review - UsagiKanji");
     const navigate = useNavigate();
     const [queue, setQueue] = useState<DueKanji[]>([]);
     const [history, setHistory] = useState<ReviewHistoryItem[]>([]);

@@ -3,8 +3,10 @@ import { kanjiApi } from "../../api/kanji";
 import type { KanjiListItem, PaginatedList } from "../../types/kanji";
 import styles from "./KanjiListPage.module.scss";
 import { useNavigate } from "react-router-dom";
+import useWebsiteTitle from "../../hooks/useWebsiteTitle";
 
 export default function KanjiListPage() {
+    useWebsiteTitle("Study - UsagiKanji");
     const [kanji, setKanji] = useState<KanjiListItem[]>([]);
     const [pageIndex, setPageIndex] = useState(1);
     const [totalPages, setTotalPages] = useState(1);

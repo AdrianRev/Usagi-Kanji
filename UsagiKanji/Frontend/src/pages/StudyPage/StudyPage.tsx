@@ -3,11 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import KanjiInfo from "../../components/KanjiInfo/KanjiInfo";
 import { kanjiApi } from "../../api/kanji";
 import type { KanjiDetail } from "../../types/kanji";
+import useWebsiteTitle from "../../hooks/useWebsiteTitle";
 
 const KanjiDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const routerNavigate = useNavigate();
     const [kanji, setKanji] = useState<KanjiDetail | null>(null);
+    useWebsiteTitle(kanji ? `${kanji.character} UsagiKanji` : " - UsagiKanji");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 

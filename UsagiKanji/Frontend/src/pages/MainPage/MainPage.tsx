@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { reviewApi } from "../../api/review";
 import { kanjiApi } from "../../api/kanji";
 import styles from "./MainPage.module.scss";
-
+import useWebsiteTitle from "../../hooks/useWebsiteTitle";
 interface NextKanji {
     kanjiId: string;
     character: string;
@@ -12,6 +12,7 @@ interface NextKanji {
 }
 
 export default function MainPage() {
+    useWebsiteTitle("Main Page - UsagiKanji");
     const navigate = useNavigate();
     const [dueCount, setDueCount] = useState<number>(0);
     const [nextKanji, setNextKanji] = useState<NextKanji | null>(null);
