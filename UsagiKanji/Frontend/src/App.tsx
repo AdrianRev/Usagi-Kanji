@@ -7,6 +7,7 @@ import MainPage from './pages/MainPage/MainPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import KanjiListPage from './pages/KanjiListPage/KanjiListPage';
 import StudyPage from './pages/StudyPage/StudyPage';
+import ReviewPage from './pages/ReviewPage/ReviewPage';
 
 const App: React.FC = () => {
     return (
@@ -36,6 +37,14 @@ const App: React.FC = () => {
                     element={
                         <ProtectedRoute>
                             <StudyPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/review"
+                    element={
+                        <ProtectedRoute>
+                            <ReviewPage />
                         </ProtectedRoute>
                     }
                 />

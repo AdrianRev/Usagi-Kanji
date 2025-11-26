@@ -16,6 +16,8 @@
     --bg-overlay: rgba(0, 0, 0, 0);
     --learned-green: #22c55e;
     --learned-green-rgb: 34, 197, 94;
+    --gradient-start: #fcd1e0;
+    --gradient-end: #ffeef5;
 }
 
 html.dark {
@@ -33,4 +35,6 @@ html.dark {
     --bg-overlay: rgba(0, 0, 0, 0.30);
     --learned-green: #4ade80;
     --learned-green-rgb: 74, 222, 128;
+    --gradient-start: #1a1a2e;
+    --gradient-end: #16213e;
 }

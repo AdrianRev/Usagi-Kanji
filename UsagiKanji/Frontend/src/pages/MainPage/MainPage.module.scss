@@ -1,0 +1,128 @@
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+
+    h1 {
+        text-align: center;
+        margin-bottom: 3rem;
+        font-size: 2.5rem;
+        color: var(--text-primary);
+    }
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+}
+
+.cardGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(var(--card-blur));
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    h2 {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+        font-size: 1.5rem;
+    }
+
+    p {
+        color: var(--text-muted);
+        margin: 0.5rem 0;
+    }
+}
+
+.count {
+    font-size: 4rem;
+    font-weight: bold;
+    color: var(--accent);
+    margin: 1rem 0;
+}
+
+.nextKanji {
+    margin: 1.5rem 0;
+
+    .character {
+        font-size: 5rem;
+        font-weight: bold;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .keyword {
+        font-size: 1.2rem;
+        color: var(--text-muted);
+        font-style: italic;
+    }
+}
+
+.primaryButton {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
+    margin-top: 1rem;
+
+    &:hover:not(:disabled) {
+        background: var(--accent-hover);
+    }
+
+    &:disabled {
+        background: var(--text-muted);
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.quickLinks {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.linkButton {
+    background: transparent;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+        background: var(--accent);
+        color: white;
+    }
+}

@@ -106,6 +106,7 @@ namespace Application.Services
         public async Task<Result> UpdateOrAddUserKanjiAsync(Guid kanjiId, Guid userId, UpdateOrAddUserKanjiDto dto)
         {
             var userKanji = await _kanjiRepository.GetUserKanjiAsync(userId, kanjiId);
+            DateTime today = DateTime.UtcNow.Date;
 
             if (userKanji == null)
             {
@@ -114,7 +115,10 @@ namespace Application.Services
                     KanjiId = kanjiId,
                     UserId = userId,
                     Notes = dto.Notes,
-                    Keyword = dto.Keyword
+                    Keyword = dto.Keyword,
+                    Interval = 0,
+                    EaseFactor = 2.5,
+                    NextReviewDate = today
                 };
                 await _kanjiRepository.AddAsync(userKanji);
             }
@@ -122,12 +126,14 @@ namespace Application.Services
             {
                 userKanji.Notes = dto.Notes;
                 userKanji.Keyword = dto.Keyword;
+                userKanji.NextReviewDate ??= today;
                 await _kanjiRepository.UpdateAsync(userKanji);
             }
 
             await _kanjiRepository.SaveChangesAsync();
             return Result.Ok();
         }
+
 
 
         public async Task<KanjiDetailsDto?> GetNeighborKanjiAsync(Guid kanjiId, Guid userId, string sortBy, bool next)

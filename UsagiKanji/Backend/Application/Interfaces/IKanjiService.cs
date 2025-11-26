@@ -1,6 +1,7 @@
 ﻿using Application.Dtos;
 using Domain.Utilities;
 using FluentResults;
+using Domain.Entities;
 
 namespace Application.Interfaces
 {

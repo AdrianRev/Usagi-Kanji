@@ -103,7 +103,13 @@ namespace Infrastructure.Repositories
             return await query.FirstOrDefaultAsync();
         }
 
-
+        public async Task<IReadOnlyList<UserKanji>> GetUserKanjisForUserDueAsync(Guid userId, DateTime date)
+        {
+            return await _context.UserKanjis
+                .Include(uk => uk.Kanji)
+                .Where(uk => uk.UserId == userId && uk.NextReviewDate <= date)
+                .ToListAsync();
+        }
 
         public async Task AddAsync(UserKanji userKanji)
         {
