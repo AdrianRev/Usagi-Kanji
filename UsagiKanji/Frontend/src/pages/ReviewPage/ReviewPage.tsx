@@ -1,15 +1,18 @@
-// src/pages/ReviewPage/ReviewPage.tsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { reviewApi } from "../../api/review";
 import type { DueKanji, KanjiReviewItem } from "../../types/review";
+import Flashcard from "../../components/Flashcard/Flashcard";
 import styles from "./ReviewPage.module.scss";
+
+interface ReviewHistoryItem extends KanjiReviewItem {
+    kanji: DueKanji;
+}
 
 export default function ReviewPage() {
     const navigate = useNavigate();
-
     const [queue, setQueue] = useState<DueKanji[]>([]);
-    const [history, setHistory] = useState<KanjiReviewItem[]>([]);
+    const [history, setHistory] = useState<ReviewHistoryItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isFlipped, setIsFlipped] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -25,7 +28,7 @@ export default function ReviewPage() {
         try {
             const due = await reviewApi.getDue();
             setQueue(due);
-        } catch (err) {
+        } catch {
             alert("Failed to load reviews. Redirecting to login...");
             navigate("/login");
         } finally {
@@ -36,39 +39,72 @@ export default function ReviewPage() {
     const answer = (rating: KanjiReviewItem["rating"]) => {
         if (!current) return;
 
-        setHistory((h) => [...h, { kanjiId: current.kanjiId, rating }]);
-        setQueue((q) => q.slice(1));
+        setHistory(h => [...h, {
+            kanjiId: current.kanjiId,
+            rating,
+            kanji: current
+        }]);
+        setQueue(q => q.slice(1));
         setIsFlipped(false);
     };
 
     const undo = () => {
         if (history.length === 0) return;
 
-        const last = history[history.length - 1];
-        setHistory((h) => h.slice(0, -1));
-        setQueue((q) => [current!, ...q]);
+        const lastReview = history[history.length - 1];
+        setHistory(h => h.slice(0, -1));
+
+        setQueue(q => [lastReview.kanji, ...q]);
         setIsFlipped(false);
     };
 
-    const submitAll = async () => {
-        if (history.length === 0) {
+    const endSession = async () => {
+        if (!history.length) {
             navigate("/study");
             return;
         }
-
+        if (!confirm(`End session early? ${history.length} review(s) will be saved.`)) {
+            return;
+        }
         setIsSubmitting(true);
         try {
-            await reviewApi.submitBatch({ reviews: history });
-            alert(`Session complete! ${history.length} reviews saved.`);
+            const reviewMap = new Map<string, KanjiReviewItem["rating"]>();
+            history.forEach(({ kanjiId, rating }) => {
+                if (rating !== "Again") {
+                    reviewMap.set(kanjiId, rating);
+                }
+            });
+            const reviews = Array.from(reviewMap.entries()).map(([kanjiId, rating]) => ({ kanjiId, rating }));
+            await reviewApi.submitBatch({ reviews });
+            alert(`Session ended. ${reviews.length} review(s) saved.`);
             navigate("/study");
-        } catch (err) {
-            alert("Failed to save reviews. Please try again.");
+        } catch {
+            alert("Failed to save reviews.");
         } finally {
             setIsSubmitting(false);
         }
     };
 
-    // Keyboard shortcuts
+    const submitAll = async () => {
+        setIsSubmitting(true);
+        try {
+            const reviewMap = new Map<string, KanjiReviewItem["rating"]>();
+            history.forEach(({ kanjiId, rating }) => {
+                if (rating !== "Again") {
+                    reviewMap.set(kanjiId, rating);
+                }
+            });
+            const reviews = Array.from(reviewMap.entries()).map(([kanjiId, rating]) => ({ kanjiId, rating }));
+            await reviewApi.submitBatch({ reviews });
+            alert(`Session complete! ${reviews.length} reviews saved.`);
+            navigate("/study");
+        } catch {
+            alert("Failed to save reviews.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     useEffect(() => {
         const handler = (e: KeyboardEvent) => {
             if (!current) return;
@@ -77,17 +113,17 @@ export default function ReviewPage() {
             if (e.key === "2") answer("Hard");
             if (e.key === "3") answer("Good");
             if (e.key === "4") answer("Easy");
-            if (e.key === "z" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); undo(); }
+            if ((e.ctrlKey || e.metaKey) && e.key === "z") { e.preventDefault(); undo(); }
         };
         window.addEventListener("keydown", handler);
         return () => window.removeEventListener("keydown", handler);
-    }, [current, history]);
+    }, [current, history.length]);
 
     if (isLoading) {
         return <div className={styles.center}><p>Loading your reviews...</p></div>;
     }
 
-    if (queue.length === 0 && history.length === 0) {
+    if (!queue.length && !history.length) {
         return (
             <div className={styles.center}>
                 <h1>No reviews due today!</h1>
@@ -102,11 +138,18 @@ export default function ReviewPage() {
     return (
         <div className={styles.wrapper}>
             <div className={styles.header}>
-                <button className={styles.backBtn} onClick={() => navigate("/study")}>
-                    ? Back
+                <button
+                    onClick={endSession}
+                    disabled={isSubmitting}
+                    className={styles.endSessionBtn}
+                >
+                    {isSubmitting ? "Saving..." : "End Session"}
                 </button>
                 <div className={styles.stats}>
-                    <span>Due: {queue.length}</span>
+                    <span>Remaining: {queue.length}</span>
+                    <span>Again: {history.filter(h => h.rating === "Again").length}</span>
+                </div>
+                <div className={styles.stats}>
                     <span>Done: {history.length}</span>
                     {history.length > 0 && (
                         <button onClick={undo} className={styles.undoBtn}>
@@ -118,37 +161,31 @@ export default function ReviewPage() {
 
             {current && (
                 <>
-                    <div className={styles.cardWrapper}>
-                        <div
-                            className={`${styles.card} ${isFlipped ? styles.flipped : ""}`}
-                            onClick={() => setIsFlipped(!isFlipped)}
-                        >
-                            <div className={styles.front}>
-                                <div className={styles.character}>{current.character}</div>
-                                <p className={styles.hint}>Click or press Space to reveal</p>
-                            </div>
-
-                            <div className={styles.back}>
-                                <div className={styles.keyword}>
-                                    {current.keyword || "— no keyword —"}
-                                </div>
-                                {current.notes && (
-                                    <div className={styles.notes}>{current.notes}</div>
-                                )}
-                                <p className={styles.hint}>Click to hide</p>
-                            </div>
-                        </div>
-                    </div>
-
+                    <Flashcard
+                        character={current.character}
+                        keyword={current.keyword}
+                        notes={current.notes}
+                        isFlipped={isFlipped}
+                        onToggle={() => setIsFlipped(v => !v)}
+                    />
                     <div className={styles.buttons}>
-                        <button onClick={() => answer("Again")} className={styles.again}>Again <kbd>1</kbd></button>
-                        <button onClick={() => answer("Hard")} className={styles.hard}>Hard <kbd>2</kbd></button>
-                        <button onClick={() => answer("Good")} className={styles.good}>Good <kbd>3</kbd></button>
-                        <button onClick={() => answer("Easy")} className={styles.easy}>Easy <kbd>4</kbd></button>
+                        <button onClick={() => answer("Again")} className={styles.again}>
+                            Again <kbd>1</kbd>
+                        </button>
+                        <button onClick={() => answer("Hard")} className={styles.hard}>
+                            Hard <kbd>2</kbd>
+                        </button>
+                        <button onClick={() => answer("Good")} className={styles.good}>
+                            Good <kbd>3</kbd>
+                        </button>
+                        <button onClick={() => answer("Easy")} className={styles.easy}>
+                            Easy <kbd>4</kbd>
+                        </button>
                     </div>
                 </>
             )}
 
+            {/* Final finish screen when queue is done */}
             {queue.length === 0 && history.length > 0 && (
                 <div className={styles.finish}>
                     <button

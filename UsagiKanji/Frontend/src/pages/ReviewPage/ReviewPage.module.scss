@@ -1,5 +1,5 @@
 ﻿.wrapper {
-    min-height: 100vh;
+    min-height: calc(100dvh - 64px);
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
@@ -261,7 +261,25 @@
     font-weight: 600;
     cursor: pointer;
 }
+.endSessionBtn {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
 
+    &:hover {
+        background: var(--bg-hover);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
 @media (max-width: 640px) {
     .character {
         font-size: 7rem;
