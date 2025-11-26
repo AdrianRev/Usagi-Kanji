@@ -13,8 +13,6 @@ namespace Domain.Repositories
         Task SaveChangesAsync();
         Task AddAsync(UserKanji userKanji);
         Task UpdateAsync(UserKanji userKanji);
-        Task<PaginatedList<UserKanji>> GetDueUserKanjisForUserAsync(Guid userId, DateTime asOfUtcDate, int pageIndex, int pageSize);
         Task<IReadOnlyList<UserKanji>> GetUserKanjisForUserDueAsync(Guid userId, DateTime date);
-
     }
 }

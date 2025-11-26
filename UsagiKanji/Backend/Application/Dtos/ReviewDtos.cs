@@ -9,8 +9,15 @@ namespace Application.Dtos
         public string? Keyword { get; set; }
     }
 
-    public class SubmitReviewDto
+    public class SubmitBatchReviewDto
     {
-        public string Rating { get; set; } = "Good";
+        public List<KanjiReviewItem> Reviews { get; set; } = new();
     }
+
+    public class KanjiReviewItem
+    {
+        public Guid KanjiId { get; set; }
+        public string Rating { get; set; } = string.Empty;
+    }
+
 }

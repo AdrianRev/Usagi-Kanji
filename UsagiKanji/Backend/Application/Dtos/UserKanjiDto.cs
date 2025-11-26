@@ -9,6 +9,6 @@ namespace Application.Dtos
         public string? Notes { get; set; }
         public string? Keyword { get; set; }
         public DateTime? NextReviewDate { get; set; }
-        public int Interval { get; set; } // Current SRS interval in days
+        public int Interval { get; set; }
     }
 }

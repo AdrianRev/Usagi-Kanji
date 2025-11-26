@@ -29,14 +29,16 @@ namespace WebAPI.Controllers
             return Ok(dueKanji);
         }
 
-        [HttpPost("{kanjiId}")]
-        public async Task<IActionResult> SubmitReview(Guid kanjiId, [FromBody] SubmitReviewDto dto)
+        [HttpPost("batch")]
+        public async Task<IActionResult> SubmitBatchReview([FromBody] SubmitBatchReviewDto dto)
         {
             var userId = _currentUser.UserId;
             if (userId == null) return Unauthorized();
 
-            var result = await _srsService.SubmitReviewAsync(userId.Value, kanjiId, dto.Rating);
-            return result.IsFailed ? BadRequest(result.Errors.Select(e => e.Message)) : Ok("Review submitted");
+            var result = await _srsService.SubmitBatchReviewAsync(userId.Value, dto);
+            return result.IsFailed
+                ? BadRequest(result.Errors.Select(e => e.Message))
+                : Ok(new { message = "Reviews submitted successfully" });
         }
     }
 }

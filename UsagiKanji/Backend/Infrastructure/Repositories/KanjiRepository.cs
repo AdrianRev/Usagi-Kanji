@@ -103,24 +103,6 @@ namespace Infrastructure.Repositories
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<PaginatedList<UserKanji>> GetDueUserKanjisForUserAsync(Guid userId, DateTime asOfUtcDate, int pageIndex, int pageSize)
-        {
-            var query = _context.UserKanjis
-                .Include(uk => uk.Kanji)
-                .Where(uk => uk.UserId == userId
-                             && (uk.NextReviewDate == null || EF.Functions.DateDiffDay(uk.NextReviewDate.Value, asOfUtcDate) <= 0))
-                .OrderBy(uk => uk.NextReviewDate ?? DateTime.MinValue)
-                .AsNoTracking();
-
-            var totalCount = await query.CountAsync();
-            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-            var items = await query
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            return new PaginatedList<UserKanji>(items, pageIndex, totalPages);
-        }
         public async Task<IReadOnlyList<UserKanji>> GetUserKanjisForUserDueAsync(Guid userId, DateTime date)
         {
             return await _context.UserKanjis

@@ -41,18 +41,37 @@ namespace Application.Services
         }
 
 
-        public async Task<Result> SubmitReviewAsync(Guid userId, Guid kanjiId, string rating)
+        public async Task<Result> SubmitBatchReviewAsync(Guid userId, SubmitBatchReviewDto dto)
         {
-            var userKanji = await _kanjiRepository.GetUserKanjiAsync(userId, kanjiId);
-            if (userKanji == null)
-                return Result.Fail("UserKanji not found");
+            if (!dto.Reviews.Any())
+                return Result.Ok();
 
             DateTime today = DateTime.UtcNow.Date;
 
+            foreach (var review in dto.Reviews)
+            {
+                var userKanji = await _kanjiRepository.GetUserKanjiAsync(userId, review.KanjiId);
+                if (userKanji == null)
+                    continue; // or collect errors
+
+                ApplyRating(userKanji, review.Rating, today);
+                await _kanjiRepository.UpdateAsync(userKanji);
+            }
+
+            await _kanjiRepository.SaveChangesAsync(); // One save at the end!
+            return Result.Ok();
+        }
+
+        private void ApplyRating(UserKanji userKanji, string rating, DateTime today)
+        {
             switch (rating)
             {
-                case "Easy":
-                    userKanji.Interval += 2;
+                case "Again":
+                    userKanji.Interval = Math.Max(0, userKanji.Interval - 2);
+                    userKanji.NextReviewDate = today;
+                    break;
+
+                case "Hard":
                     userKanji.NextReviewDate = today.AddDays(GetIntervalDays(userKanji.Interval));
                     break;
 
@@ -61,13 +80,9 @@ namespace Application.Services
                     userKanji.NextReviewDate = today.AddDays(GetIntervalDays(userKanji.Interval));
                     break;
 
-                case "Hard":
+                case "Easy":
+                    userKanji.Interval += 2;
                     userKanji.NextReviewDate = today.AddDays(GetIntervalDays(userKanji.Interval));
-                    break;
-
-                case "Again":
-                    userKanji.Interval = Math.Max(0, userKanji.Interval - 2);
-                    userKanji.NextReviewDate = today;
                     break;
 
                 default:
@@ -75,11 +90,6 @@ namespace Application.Services
                     userKanji.NextReviewDate = today.AddDays(GetIntervalDays(userKanji.Interval));
                     break;
             }
-
-            await _kanjiRepository.UpdateAsync(userKanji);
-            await _kanjiRepository.SaveChangesAsync();
-
-            return Result.Ok();
         }
 
 
