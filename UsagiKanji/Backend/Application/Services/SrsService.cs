@@ -72,6 +72,7 @@ namespace Application.Services
                     break;
 
                 case "Hard":
+                    userKanji.Interval = Math.Max(1, userKanji.Interval);
                     userKanji.NextReviewDate = today.AddDays(GetIntervalDays(userKanji.Interval));
                     break;
 

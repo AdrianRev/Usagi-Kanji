@@ -62,18 +62,6 @@ export default function MainPage() {
 
             <div className={styles.cardGrid}>
                 <div className={styles.card}>
-                    <h2>Reviews</h2>
-                    <div className={styles.count}>{dueCount}</div>
-                    <p>cards due today</p>
-                    <button
-                        onClick={startReviews}
-                        disabled={dueCount === 0}
-                        className={styles.primaryButton}
-                    >
-                        {dueCount > 0 ? "Start Reviews" : "No Reviews Due"}
-                    </button>
-                </div>
-                <div className={styles.card}>
                     <h2>Learn New</h2>
                     {nextKanji ? (
                         <>
@@ -92,6 +80,19 @@ export default function MainPage() {
                         <p>All kanji learned! 🎉</p>
                     )}
                 </div>
+                <div className={styles.card}>
+                    <h2>Reviews</h2>
+                    <div className={styles.count}>{dueCount}</div>
+                    <p>cards due today</p>
+                    <button
+                        onClick={startReviews}
+                        disabled={dueCount === 0}
+                        className={styles.primaryButton}
+                    >
+                        {dueCount > 0 ? "Start Reviews" : "No Reviews Due"}
+                    </button>
+                </div>
+                
             </div>
         </div>
     );
