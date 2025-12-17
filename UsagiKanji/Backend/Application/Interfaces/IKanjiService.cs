@@ -11,5 +11,6 @@ namespace Application.Interfaces
         Task<KanjiDetailsDto?> GetKanjiByIdAsync(Guid kanjiId, Guid userId);
         Task<Result> UpdateOrAddUserKanjiAsync(Guid kanjiId, Guid userId, UpdateOrAddUserKanjiDto dto);
         Task<KanjiDetailsDto?> GetNeighborKanjiAsync(Guid kanjiId, Guid userId, string sortBy, bool next);
+        Task<NextUnlearnedKanjiDto?> GetNextUnlearnedKanjiAsync(Guid userId, string sortBy, CancellationToken cancellationToken = default);
     }
 }

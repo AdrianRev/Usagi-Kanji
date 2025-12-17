@@ -36,6 +36,9 @@
     text-align: center;
     box-shadow: var(--shadow);
     transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 
     &:hover {
         transform: translateY(-4px);
@@ -76,6 +79,12 @@
         font-size: 1.2rem;
         color: var(--text-muted);
         font-style: italic;
+    }
+
+    .index {
+        font-size: 1rem;
+        color: var(--text-muted);
+        margin-top: 0.5rem;
     }
 }
 

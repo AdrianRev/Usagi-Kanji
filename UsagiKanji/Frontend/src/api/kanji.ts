@@ -1,5 +1,5 @@
 import api from "./axiosInstance";
-import type { KanjiListItem, PaginatedList, KanjiListParams, KanjiDetail } from '../types/kanji';
+import type { KanjiListItem, PaginatedList, KanjiListParams, KanjiDetail, NextUnlearnedKanji } from '../types/kanji';
 
 
 export const kanjiApi = {
@@ -21,6 +21,12 @@ export const kanjiApi = {
                 sortBy,
                 next: direction === "next"
             }
+        });
+        return response.data;
+    },
+    getNextToLearn: async (sortBy: string): Promise<NextUnlearnedKanji> => {
+        const response = await api.get<NextUnlearnedKanji>("/kanji/next-unlearned", {
+            params: { sortBy }
         });
         return response.data;
     },

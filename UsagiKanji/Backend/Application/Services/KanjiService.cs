@@ -183,5 +183,31 @@ namespace Application.Services
             };
         }
 
+        public async Task<NextUnlearnedKanjiDto?> GetNextUnlearnedKanjiAsync(Guid userId, string sortBy, CancellationToken cancellationToken = default)
+        {
+            var kanji = await _kanjiRepository.GetNextUnlearnedKanjiAsync(userId, sortBy, cancellationToken);
+            if (kanji == null) return null;
+
+            var sortByLower = sortBy?.ToLower() ?? "heisig6";
+            int? currentIndex = sortByLower switch
+            {
+                "grade" => kanji.SortIndex_Grade,
+                "jlptlevel" => kanji.SortIndex_JLPT,
+                "frequency" => kanji.FrequencyRank,
+                "heisig" => kanji.HeisigNumber,
+                "heisig6" => kanji.Heisig6Number,
+                _ => kanji.Heisig6Number
+            };
+
+            return new NextUnlearnedKanjiDto
+            {
+                Id = kanji.Id,
+                Character = kanji.Character,
+                PrimaryMeaning = kanji.Meanings?.FirstOrDefault(m => m.IsPrimary)?.Value,
+                IsLearned = false,
+                CurrentIndex = currentIndex
+            };
+        }
+
     }
 }

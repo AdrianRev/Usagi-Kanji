@@ -74,5 +74,20 @@ namespace WebAPI.Controllers
 
             return Ok(neighbor);
         }
+
+        [HttpGet("next-unlearned")]
+        public async Task<IActionResult> GetNextUnlearnedKanji([FromQuery] string sortBy = "SortIndex_Grade", CancellationToken cancellationToken = default)
+        {
+            var userId = _currentUser.UserId;
+            if (userId == null)
+                return Unauthorized();
+
+            var kanjiDto = await _kanjiService.GetNextUnlearnedKanjiAsync(userId.Value, sortBy, cancellationToken);
+
+            if (kanjiDto == null)
+                return NotFound(new { message = "No unlearned kanji found" });
+
+            return Ok(kanjiDto);
+        }
     }
 }

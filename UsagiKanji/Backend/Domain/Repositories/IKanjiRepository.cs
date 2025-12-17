@@ -14,5 +14,6 @@ namespace Domain.Repositories
         Task AddAsync(UserKanji userKanji);
         Task UpdateAsync(UserKanji userKanji);
         Task<IReadOnlyList<UserKanji>> GetUserKanjisForUserDueAsync(Guid userId, DateTime date);
+        Task<Kanji?> GetNextUnlearnedKanjiAsync(Guid userId, string sortBy, CancellationToken cancellationToken = default);
     }
 }

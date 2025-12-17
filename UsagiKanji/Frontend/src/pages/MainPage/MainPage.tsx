@@ -4,18 +4,13 @@ import { reviewApi } from "../../api/review";
 import { kanjiApi } from "../../api/kanji";
 import styles from "./MainPage.module.scss";
 import useWebsiteTitle from "../../hooks/useWebsiteTitle";
-interface NextKanji {
-    kanjiId: string;
-    character: string;
-    keyword: string;
-    heisig6?: number;
-}
+import type { NextUnlearnedKanji } from '../../types/kanji';
 
 export default function MainPage() {
     useWebsiteTitle("Main Page - UsagiKanji");
     const navigate = useNavigate();
     const [dueCount, setDueCount] = useState<number>(0);
-    const [nextKanji, setNextKanji] = useState<NextKanji | null>(null);
+    const [nextKanji, setNextKanji] = useState<NextUnlearnedKanji | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -28,7 +23,7 @@ export default function MainPage() {
             const dueList = await reviewApi.getDue();
             setDueCount(dueList.length);
 
-            const sortBy = localStorage.getItem("kanji-sort-by") || "heisig6";
+            const sortBy = localStorage.getItem("kanji-sort-by") || "Heisig6Number";
             const next = await kanjiApi.getNextToLearn(sortBy);
             setNextKanji(next);
         } catch (error) {
@@ -44,7 +39,7 @@ export default function MainPage() {
 
     const learnKanji = () => {
         if (nextKanji) {
-            navigate(`/kanji/${nextKanji.kanjiId}`);
+            navigate(`/study/${nextKanji.id}`);
         }
     };
 
@@ -59,7 +54,6 @@ export default function MainPage() {
     return (
         <div className={styles.container}>
             <h1>Welcome to UsagiKanji</h1>
-
             <div className={styles.cardGrid}>
                 <div className={styles.card}>
                     <h2>Learn New</h2>
@@ -67,7 +61,10 @@ export default function MainPage() {
                         <>
                             <div className={styles.nextKanji}>
                                 <div className={styles.character}>{nextKanji.character}</div>
-                                <div className={styles.keyword}>{nextKanji.keyword}</div>
+                                <div className={styles.keyword}>{nextKanji.primaryMeaning}</div>
+                                {nextKanji.currentIndex && (
+                                    <div className={styles.index}>#{nextKanji.currentIndex}</div>
+                                )}
                             </div>
                             <button
                                 onClick={learnKanji}
@@ -92,7 +89,6 @@ export default function MainPage() {
                         {dueCount > 0 ? "Start Reviews" : "No Reviews Due"}
                     </button>
                 </div>
-                
             </div>
         </div>
     );

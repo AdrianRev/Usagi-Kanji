@@ -54,3 +54,11 @@ export interface KanjiDetail {
     keyword?: string;
     isLearned: boolean;
 }
+
+export interface NextUnlearnedKanji {
+    id: string;
+    character: string;
+    primaryMeaning: string | null;
+    isLearned: boolean;
+    currentIndex: number | null;
+}

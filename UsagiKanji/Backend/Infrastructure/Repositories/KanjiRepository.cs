@@ -103,6 +103,31 @@ namespace Infrastructure.Repositories
             return await query.FirstOrDefaultAsync();
         }
 
+        public async Task<Kanji?> GetNextUnlearnedKanjiAsync(Guid userId, string sortBy, CancellationToken cancellationToken = default)
+        {
+            var learnedKanjiIds = await _context.UserKanjis
+                .Where(uk => uk.UserId == userId)
+                .Select(uk => uk.KanjiId)
+                .ToListAsync(cancellationToken);
+
+            IQueryable<Kanji> query = _context.Kanji
+                .Include(k => k.Meanings)
+                .Where(k => !learnedKanjiIds.Contains(k.Id))
+                .AsNoTracking();
+
+            var sortByLower = sortBy?.ToLower() ?? "heisig6";
+            query = sortByLower switch
+            {
+                "grade" => query.Where(k => k.SortIndex_Grade.HasValue).OrderBy(k => k.SortIndex_Grade),
+                "jlptlevel" => query.Where(k => k.SortIndex_JLPT.HasValue).OrderBy(k => k.SortIndex_JLPT),
+                "frequency" => query.Where(k => k.FrequencyRank.HasValue).OrderBy(k => k.FrequencyRank),
+                "heisig" => query.Where(k => k.HeisigNumber.HasValue).OrderBy(k => k.HeisigNumber),
+                "heisig6" => query.Where(k => k.Heisig6Number.HasValue).OrderBy(k => k.Heisig6Number),
+                _ => query.Where(k => k.Heisig6Number.HasValue).OrderBy(k => k.Heisig6Number)
+            };
+
+            return await query.FirstOrDefaultAsync(cancellationToken);
+        }
         public async Task<IReadOnlyList<UserKanji>> GetUserKanjisForUserDueAsync(Guid userId, DateTime date)
         {
             return await _context.UserKanjis
