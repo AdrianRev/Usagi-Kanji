@@ -31,7 +31,7 @@ const LoginPage: React.FC = () => {
         setIsLoading(true);
 
         try {
-            await apiLogin(loginData); // This already saves the token
+            await apiLogin(loginData);
             navigate("/main");
         } catch (err: any) {
             const serverError =

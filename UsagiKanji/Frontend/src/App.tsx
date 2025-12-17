@@ -8,6 +8,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import KanjiListPage from './pages/KanjiListPage/KanjiListPage';
 import StudyPage from './pages/StudyPage/StudyPage';
 import ReviewPage from './pages/ReviewPage/ReviewPage';
+import SettingsPage from './pages/SettingsPage/SettingsPage';
 
 const App: React.FC = () => {
     return (
@@ -37,6 +38,14 @@ const App: React.FC = () => {
                     element={
                         <ProtectedRoute>
                             <StudyPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/settings"
+                    element={
+                        <ProtectedRoute>
+                            <SettingsPage />
                         </ProtectedRoute>
                     }
                 />
