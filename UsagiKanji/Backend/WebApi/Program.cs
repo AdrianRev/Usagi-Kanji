@@ -60,11 +60,17 @@ builder.Services.AddCors(options =>
     });
 });
 
-var app = builder.Build();
 
+
+var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+}
+app.UseCors("AllowFrontend");
 app.UseHttpsRedirection();
 app.UseAuthentication();
-app.UseCors("AllowFrontend");
 app.UseAuthorization();
 
 
