@@ -18,12 +18,12 @@ function Flashcard({ character, keyword, notes, isFlipped, onToggle }: Flashcard
                 onClick={onToggle}
             >
                 <div className={styles.front}>
-                    <div className={styles.character}>{character}</div>
+                    <div className={styles.keyword}>{keyword || "— no keyword —"}</div>
                     <p className={styles.hint}>Click or press Space to reveal</p>
                 </div>
 
                 <div className={styles.back}>
-                    <div className={styles.keyword}>{keyword || "— no keyword —"}</div>
+                    <div className={styles.character}>{character}</div>
                     {notes && <div className={styles.notes}>{notes}</div>}
                     <p className={styles.hint}>Click to hide</p>
                 </div>

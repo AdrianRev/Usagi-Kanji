@@ -24,18 +24,18 @@ namespace Importer
 
             using var context = new ApplicationDbContext(options);
             context.Database.Migrate();
+            if (context.Kanji.Any())
+            {
+                Console.WriteLine("[Importer] Data already imported - skipping.");
+                return;
+            }
+            // Step 1: Import Kanji
+            var kanjiImporter = new KanjiImporterService(context);
+            await kanjiImporter.ImportKanjiDicJsonAsync(Path.Combine(AppContext.BaseDirectory, "Data", "kanji_dic.json"));
 
-            //// Step 1: Import Kanji
-            //var kanjiImporter = new KanjiImporterService(context);
-            //await kanjiImporter.ImportKanjiDicJsonAsync(Path.Combine(AppContext.BaseDirectory, "Data", "kanji_dic.json"));
-
-            //// Step 2: Import Vocabulary
-            //var vocabImporter = new VocabularyImporterService(context);
-            //await vocabImporter.ImportVocabularyJsonAsync(Path.Combine(AppContext.BaseDirectory, "Data", "vocabulary.json"));
-
-            //// Step 3: Assign Readings
-            //var readingService = new VocabularyReadingSplitterService(context);
-            //await readingService.AssignReadingsAsync();
+            // Step 2: Import Vocabulary
+            var vocabImporter = new VocabularyImporterService(context);
+            await vocabImporter.ImportVocabularyJsonAsync(Path.Combine(AppContext.BaseDirectory, "Data", "vocabulary.json"));
 
             var indicesService = new KanjiIndicesService(context);
             await indicesService.GenerateSortIndicesAsync();

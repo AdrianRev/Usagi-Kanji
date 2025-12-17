@@ -19,9 +19,9 @@ namespace Importer.Services
         {
             Console.WriteLine("[Importer] Importing vocabulary JSON...");
 
-            var json = await File.ReadAllTextAsync(filePath);
+            await using var file = File.OpenRead(filePath);
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var root = JsonSerializer.Deserialize<VocabularyRoot>(json, options);
+            var root = await JsonSerializer.DeserializeAsync<VocabularyRoot>(file, options);
 
             if (root?.Words == null || root.Words.Count == 0)
             {
@@ -29,66 +29,88 @@ namespace Importer.Services
                 return;
             }
 
-            foreach (var entry in root.Words)
-            {
-                var vocab = new Vocabulary
-                {
-                    JMdictId = entry.Id
-                };
+            Console.WriteLine($"[Importer] Found {root.Words.Count} vocabulary entries. Starting batched import...");
 
-                foreach (var kanjiVariant in entry.Kanji)
+            var allKanji = await _context.Kanji
+                .Select(k => new { k.Id, k.Character })
+                .ToDictionaryAsync(k => k.Character, k => k.Id);
+
+            Console.WriteLine($"[Importer] Loaded {allKanji.Count} kanji characters for lookup.");
+
+            const int batchSize = 5000;
+            int totalImported = 0;
+
+            for (int i = 0; i < root.Words.Count; i += batchSize)
+            {
+                var batch = root.Words.Skip(i).Take(batchSize).ToList();
+
+                foreach (var entry in batch)
                 {
-                    var kanjiForm = new VocabularyKanjiForm
+                    var vocab = new Vocabulary
                     {
-                        Text = kanjiVariant.Text,
-                        Common = kanjiVariant.Common
+                        JMdictId = entry.Id
                     };
 
-                    foreach (var c in kanjiVariant.Text)
+                    // Kanji forms
+                    foreach (var kanjiVariant in entry.Kanji)
                     {
-                        var kanjiEntity = await _context.Kanji.FirstOrDefaultAsync(k => k.Character == c.ToString());
-                        if (kanjiEntity != null)
+                        var kanjiForm = new VocabularyKanjiForm
                         {
-                            kanjiForm.KanjiCharacters.Add(new VocabularyKanjiCharacter
+                            Text = kanjiVariant.Text,
+                            Common = kanjiVariant.Common
+                        };
+
+                        foreach (var c in kanjiVariant.Text.Distinct())
+                        {
+                            if (allKanji.TryGetValue(c.ToString(), out var kanjiId))
                             {
-                                KanjiId = kanjiEntity.Id
-                            });
+                                kanjiForm.KanjiCharacters.Add(new VocabularyKanjiCharacter
+                                {
+                                    KanjiId = kanjiId
+                                });
+                            }
+                        }
+
+                        vocab.KanjiForms.Add(kanjiForm);
+                    }
+
+                    // Kana readings
+                    foreach (var kana in entry.Kana)
+                    {
+                        vocab.KanaReadings.Add(new VocabularyKana
+                        {
+                            Text = kana.Text,
+                            Common = kana.Common,
+                            AppliesToKanji = string.Join(',', kana.AppliesToKanji)
+                        });
+                    }
+
+                    foreach (var sense in entry.Sense)
+                    {
+                        foreach (var gloss in sense.Gloss)
+                        {
+                            if (gloss.Lang == "eng")
+                            {
+                                vocab.Glosses.Add(new VocabularyGloss
+                                {
+                                    Text = gloss.Text,
+                                    Language = gloss.Lang
+                                });
+                            }
                         }
                     }
 
-                    vocab.KanjiForms.Add(kanjiForm);
+                    _context.Vocabulary.Add(vocab);
                 }
 
-                foreach (var kana in entry.Kana)
-                {
-                    vocab.KanaReadings.Add(new VocabularyKana
-                    {
-                        Text = kana.Text,
-                        Common = kana.Common,
-                        AppliesToKanji = string.Join(',', kana.AppliesToKanji)
-                    });
-                }
+                await _context.SaveChangesAsync();
+                _context.ChangeTracker.Clear();
 
-                foreach (var sense in entry.Sense)
-                {
-                    foreach (var gloss in sense.Gloss)
-                    {
-                        if (gloss.Lang == "eng")
-                        {
-                            vocab.Glosses.Add(new VocabularyGloss
-                            {
-                                Text = gloss.Text,
-                                Language = gloss.Lang
-                            });
-                        }
-                    }
-                }
-
-                _context.Vocabulary.Add(vocab);
+                totalImported += batch.Count;
+                Console.WriteLine($"[Importer] Imported batch: {totalImported}/{root.Words.Count} entries ({(totalImported * 100.0 / root.Words.Count):F1}% complete)");
             }
 
-            await _context.SaveChangesAsync();
-            Console.WriteLine($"[Importer] Imported {root.Words.Count} vocabulary entries.");
+            Console.WriteLine($"[Importer] Successfully imported {totalImported} vocabulary entries.");
         }
     }
 }
