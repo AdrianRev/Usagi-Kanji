@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./LoginPage.module.scss";
 import { login as apiLogin } from "../../api/auth";
-import type { LoginRequest, LoginResponse } from "../../types/auth";
+import type { LoginRequest } from "../../types/auth";
 import useWebsiteTitle from "../../hooks/useWebsiteTitle";
 
 const LoginPage: React.FC = () => {
@@ -31,16 +31,7 @@ const LoginPage: React.FC = () => {
         setIsLoading(true);
 
         try {
-            const loginResponse: LoginResponse = await apiLogin(loginData);
-
-            const token = loginResponse.token;
-
-            if (!token) {
-                setError("Login failed: Server did not return a token");
-                return;
-            }
-
-            await apiLogin(loginData);
+            await apiLogin(loginData); // This already saves the token
             navigate("/main");
         } catch (err: any) {
             const serverError =

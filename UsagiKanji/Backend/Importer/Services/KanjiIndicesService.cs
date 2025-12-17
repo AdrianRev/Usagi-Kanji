@@ -17,27 +17,55 @@ namespace Importer.Services
         {
             Console.WriteLine("[Importer] Generating sort index values...");
 
-            var gradeList = await _context.Kanji
-                .Where(k => k.Grade != null)
-                .OrderBy(k => k.Grade)
-                .ThenBy(k => k.FrequencyRank == null)
-                .ThenBy(k => k.FrequencyRank)
-                .ToListAsync();
+            const int batchSize = 2000;
 
-            for (int i = 0; i < gradeList.Count; i++)
-                gradeList[i].SortIndex_Grade = i + 1;
+            int gradeIndex = 1;
+            int skip = 0;
+            while (true)
+            {
+                var batch = await _context.Kanji
+                    .Where(k => k.Grade != null)
+                    .OrderBy(k => k.Grade)
+                    .ThenBy(k => k.FrequencyRank == null)
+                    .ThenBy(k => k.FrequencyRank)
+                    .Skip(skip)
+                    .Take(batchSize)
+                    .ToListAsync();
 
-            var jlptList = await _context.Kanji
-                .Where(k => k.JLPTLevel != null)
-                .OrderByDescending(k => k.JLPTLevel)
-                .ThenBy(k => k.FrequencyRank == null)
-                .ThenBy(k => k.FrequencyRank)
-                .ToListAsync();
+                if (!batch.Any()) break;
 
-            for (int i = 0; i < jlptList.Count; i++)
-                jlptList[i].SortIndex_JLPT = i + 1;
+                foreach (var kanji in batch)
+                {
+                    kanji.SortIndex_Grade = gradeIndex++;
+                }
 
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+                skip += batchSize;
+            }
+
+            int jlptIndex = 1;
+            skip = 0;
+            while (true)
+            {
+                var batch = await _context.Kanji
+                    .Where(k => k.JLPTLevel != null)
+                    .OrderByDescending(k => k.JLPTLevel)
+                    .ThenBy(k => k.FrequencyRank == null)
+                    .ThenBy(k => k.FrequencyRank)
+                    .Skip(skip)
+                    .Take(batchSize)
+                    .ToListAsync();
+
+                if (!batch.Any()) break;
+
+                foreach (var kanji in batch)
+                {
+                    kanji.SortIndex_JLPT = jlptIndex++;
+                }
+
+                await _context.SaveChangesAsync();
+                skip += batchSize;
+            }
 
             Console.WriteLine("[Importer] Sort indices generated successfully.");
         }
