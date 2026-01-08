@@ -22,7 +22,6 @@ export default function KanjiListPage() {
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
 
-    // 🔹 Settings defaults
     const [settingsSortBy, setSettingsSortBy] =
         useState<KanjiSortSetting>(() =>
             (localStorage.getItem("kanji-sort-by") as KanjiSortSetting) ||
@@ -35,16 +34,13 @@ export default function KanjiListPage() {
             "6th"
         );
 
-    // 🔹 Local dropdown state (always a real value)
     const [localSortBy, setLocalSortBy] =
         useState<KanjiSortSetting>(settingsSortBy);
 
-    // 🔹 Has user manually changed it?
     const [isOverridden, setIsOverridden] = useState(false);
 
     const navigate = useNavigate();
 
-    // 🔹 Resolve final sort
     const resolveSortBy = (): KanjiSortApi => {
         const sort = isOverridden ? localSortBy : settingsSortBy;
 
@@ -69,12 +65,10 @@ export default function KanjiListPage() {
         }
     };
 
-    // 🔹 Load when relevant state changes
     useEffect(() => {
         loadKanji();
     }, [pageIndex, localSortBy, settingsSortBy, heisigEdition]);
 
-    // 🔹 React to settings changes
     useEffect(() => {
         const handler = () => {
             const newSettingsSort =
@@ -90,7 +84,6 @@ export default function KanjiListPage() {
             setSettingsSortBy(newSettingsSort);
             setHeisigEdition(newEdition);
 
-            // Only update dropdown if user hasn't overridden
             if (!isOverridden) {
                 setLocalSortBy(newSettingsSort);
             }

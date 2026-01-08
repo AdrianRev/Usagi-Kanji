@@ -16,7 +16,7 @@ interface KanjiInfoProps {
 const KanjiInfo: React.FC<KanjiInfoProps> = ({ kanji, onSave, onNavigate, prevExists, nextExists }) => {
     const [keyword, setKeyword] = useState(kanji.keyword || "");
     const [notes, setNotes] = useState(kanji.notes || "");
-    const [saving, setSaving] = useState(false);
+    const [saveMessage, setSaveMessage] = useState("");
 
     useEffect(() => {
         const primaryMeaning = kanji.meanings.find(m => m.isPrimary)?.value || "";
@@ -25,11 +25,15 @@ const KanjiInfo: React.FC<KanjiInfoProps> = ({ kanji, onSave, onNavigate, prevEx
     }, [kanji]);
 
     const handleSave = async () => {
-        setSaving(true);
         try {
             await onSave(keyword, notes);
-        } finally {
-            setSaving(false);
+            setSaveMessage("Keyword and notes saved successfully!");
+            setTimeout(() => setSaveMessage(""), 3000);
+        } catch (error) {
+            setSaveMessage("Save failed");
+            setTimeout(() => {
+                setSaveMessage("");
+            }, 3000);
         }
     };
 
@@ -101,25 +105,33 @@ const KanjiInfo: React.FC<KanjiInfoProps> = ({ kanji, onSave, onNavigate, prevEx
                             &gt;
                         </button>
                     </div>
-                    <textarea
-                        id="notes"
-                        value={notes}
-                        onChange={e => setNotes(e.target.value)}
-                        className={styles.notesTextarea}
-                        placeholder="Add your notes here"
-                    />
+
+                    <div className={styles.notesContent}>
+                        <textarea
+                            id="notes"
+                            value={notes}
+                            onChange={e => setNotes(e.target.value)}
+                            className={styles.notesTextarea}
+                            placeholder="Add your notes here"
+                        />
+                    </div>
+
                     <div className={styles.saveWrapper}>
+                        {saveMessage && (
+                            <p className={styles.successMessage}>{saveMessage}</p>
+                        )}
                         <button
                             onClick={handleSave}
-                            disabled={saving}
                             className={styles.saveButton}
                         >
-                            {saving ? "Saving..." : "Save"}
+                            Save
                         </button>
                     </div>
+
                     <KanjiVocabulary vocabulary={kanji.vocabulary} />
                 </div>
             </div>
+
         </div>
     );
 };

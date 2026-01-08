@@ -13,11 +13,6 @@ export default function SettingsPage() {
         (localStorage.getItem("heisig-edition") as HeisigEdition) || "6th"
     );
 
-    const [currentPassword, setCurrentPassword] = useState("");
-    const [newPassword, setNewPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [passwordMessage, setPasswordMessage] = useState("");
-
     const [saveMessage, setSaveMessage] = useState("");
 
     const handleSaveSettings = () => {
@@ -28,29 +23,6 @@ export default function SettingsPage() {
         setTimeout(() => setSaveMessage(""), 3000);
     };
 
-    const handlePasswordChange = async () => {
-        if (newPassword !== confirmPassword) {
-            setPasswordMessage("Passwords don't match!");
-            return;
-        }
-        if (newPassword.length < 8) {
-            setPasswordMessage("Password must be at least 8 characters!");
-            return;
-        }
-
-        try {
-            // API call goes here
-            // await userApi.changePassword(currentPassword, newPassword);
-
-            setPasswordMessage("Password changed successfully!");
-            setCurrentPassword("");
-            setNewPassword("");
-            setConfirmPassword("");
-            setTimeout(() => setPasswordMessage(""), 3000);
-        } catch {
-            setPasswordMessage("Failed to change password. Please try again.");
-        }
-    };
 
     return (
         <div className={styles.container}>
@@ -101,66 +73,10 @@ export default function SettingsPage() {
                         onClick={handleSaveSettings}
                         className={styles.primaryButton}
                     >
-                        Kanji Order Preferences
+                        Save Kanji Order Preferences
                     </button>
                     {saveMessage && (
                         <p className={styles.successMessage}>{saveMessage}</p>
-                    )}
-                </section>
-
-                <section className={styles.section}>
-                    <h2>Change Password</h2>
-
-                    <div className={styles.settingGroup}>
-                        <label htmlFor="currentPassword">Current Password</label>
-                        <input
-                            id="currentPassword"
-                            type="password"
-                            value={currentPassword}
-                            onChange={(e) => setCurrentPassword(e.target.value)}
-                            className={styles.input}
-                        />
-                    </div>
-
-                    <div className={styles.settingGroup}>
-                        <label htmlFor="newPassword">New Password</label>
-                        <input
-                            id="newPassword"
-                            type="password"
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                            className={styles.input}
-                        />
-                    </div>
-
-                    <div className={styles.settingGroup}>
-                        <label htmlFor="confirmPassword">Confirm New Password</label>
-                        <input
-                            id="confirmPassword"
-                            type="password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            className={styles.input}
-                        />
-                    </div>
-
-                    <button
-                        onClick={handlePasswordChange}
-                        className={styles.primaryButton}
-                    >
-                        Change Password
-                    </button>
-
-                    {passwordMessage && (
-                        <p
-                            className={
-                                passwordMessage.includes("success")
-                                    ? styles.successMessage
-                                    : styles.errorMessage
-                            }
-                        >
-                            {passwordMessage}
-                        </p>
                     )}
                 </section>
             </div>

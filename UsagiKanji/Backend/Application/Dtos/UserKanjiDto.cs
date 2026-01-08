@@ -10,5 +10,8 @@ namespace Application.Dtos
         public string? Keyword { get; set; }
         public DateTime? NextReviewDate { get; set; }
         public int Interval { get; set; }
+        public double EaseFactor { get; set; }
+        public int Repetitions { get; set; }
+        public int Lapses { get; set; }
     }
 }
