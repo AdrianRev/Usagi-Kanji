@@ -7,7 +7,5 @@
 
         public Guid KanjiId { get; set; }
         public Kanji Kanji { get; set; } = null!;
-
-        public string? Reading { get; set; }
     }
 }

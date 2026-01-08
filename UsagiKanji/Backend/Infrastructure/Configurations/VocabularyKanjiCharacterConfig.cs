@@ -10,9 +10,6 @@ namespace Infrastructure.Configurations
         {
             builder.HasKey(kc => kc.Id);
 
-            builder.Property(kc => kc.Reading)
-                   .HasMaxLength(100);
-
             builder.HasOne(kc => kc.Kanji)
                    .WithMany(k => k.VocabularyKanjiCharacters)
                    .HasForeignKey(kc => kc.KanjiId)
