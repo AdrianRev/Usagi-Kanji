@@ -117,7 +117,6 @@ namespace Application.Services
                     Notes = dto.Notes,
                     Keyword = dto.Keyword,
                     Interval = 0,
-                    EaseFactor = 2.5,
                     NextReviewDate = today
                 };
                 await _kanjiRepository.AddAsync(userKanji);

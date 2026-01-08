@@ -84,11 +84,10 @@ const SignUpPage: React.FC = () => {
             const token = res.token;
 
             if (!token) {
-                setError("Sign-up succeeded but no token received");
-                setIsLoading(false);
+                alert("Sign-up successful! You can now log in.");
+                navigate("/login");
                 return;
             }
-
             await apiSignup(signUpData);
 
             navigate("/main");

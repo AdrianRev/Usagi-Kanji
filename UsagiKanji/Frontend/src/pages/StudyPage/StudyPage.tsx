@@ -58,9 +58,8 @@ const KanjiDetailPage: React.FC = () => {
         try {
             await kanjiApi.update(kanji.id, { keyword, notes });
             setKanji({ ...kanji, keyword, notes });
-            alert("Saved successfully!");
         } catch {
-            alert("Failed to save");
+            throw error;
         }
     };
 

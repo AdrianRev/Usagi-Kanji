@@ -29,8 +29,17 @@ namespace Infrastructure.Configurations
             builder.Property(uk => uk.EaseFactor)
                    .HasDefaultValue(2.5);
 
+            builder.Property(uk => uk.Repetitions)
+                   .HasDefaultValue(0);
+
+            builder.Property(uk => uk.Lapses)
+                   .HasDefaultValue(0);
+
             builder.Property(uk => uk.Interval)
                    .HasDefaultValue(0);
+
+            builder.Property(uk => uk.NextReviewDate)
+                   .IsRequired(false);
         }
     }
 }

@@ -8,8 +8,10 @@
         public string? Notes { get; set; }
         public string? Keyword { get; set; }
 
-        public double EaseFactor { get; set; } = 2.5;
         public int Interval { get; set; } = 0;
+        public double EaseFactor { get; set; } = 2.5;
+        public int Repetitions { get; set; } = 0;
+        public int Lapses { get; set; } = 0;
         public DateTime? NextReviewDate { get; set; }
 
         public Kanji Kanji { get; set; } = null!;

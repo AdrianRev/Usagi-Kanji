@@ -76,6 +76,7 @@
 }
 
 .notesTextarea {
+
     width: 100%;
     height: 200px;
     padding: 0.5rem;
@@ -85,14 +86,15 @@
     background-color: var(--card-bg);
     color: var(--text-primary);
     resize: vertical;
-    margin-bottom: 0.5rem;
+    margin: 0.5rem 0.5rem 1rem;
 }
 
 .saveWrapper {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
 }
-
 .saveButton {
     padding: 0.5rem 1rem;
     font-size: 1rem;
@@ -182,11 +184,22 @@
         }
     }
 }
-
+.successMessage {
+    margin-top: 0;
+    padding: 0.5rem 1rem;
+    background: rgba(34, 197, 94, 0.1);
+    color: #16a34a;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
 .field {
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 0;
     overflow: hidden;
+}
+.notesContent {
+    padding: 0.75rem;
 }
