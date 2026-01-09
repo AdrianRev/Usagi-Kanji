@@ -68,7 +68,7 @@ namespace Application.Services
             int quality = rating switch
             {
                 "Again" => 0,
-                "Hard" => 3,
+                "Hard" => 2,
                 "Good" => 4,
                 "Easy" => 5,
                 _ => 4
@@ -106,21 +106,6 @@ namespace Application.Services
                 userKanji.NextReviewDate = today.AddDays(1);
             else
                 userKanji.NextReviewDate = today.AddDays(userKanji.Interval);
-        }
-
-
-        private int GetIntervalDays(int interval)
-        {
-            return interval switch
-            {
-                0 => 0,
-                1 => 1,
-                2 => 3,
-                3 => 7,
-                4 => 14,
-                5 => 30,
-                _ => (int)Math.Pow(2, interval - 4) * 30
-            };
         }
     }
 }
