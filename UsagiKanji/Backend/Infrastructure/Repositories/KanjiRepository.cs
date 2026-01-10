@@ -35,7 +35,7 @@ namespace Infrastructure.Repositories
 
         public async Task<IReadOnlyList<Guid>> GetLearnedKanjiIdsForUserAsync(Guid userId, IReadOnlyList<Guid> kanjiIds, CancellationToken ct = default)
         {
-            return await _context.UserKanjis
+            return await _context.UserKanji
                 .Where(uk => uk.UserId == userId && kanjiIds.Contains(uk.KanjiId))
                 .Select(uk => uk.KanjiId)
                 .ToListAsync(ct);
@@ -59,7 +59,7 @@ namespace Infrastructure.Repositories
         }
         public async Task<UserKanji?> GetUserKanjiAsync(Guid userId, Guid kanjiId)
         {
-            return await _context.UserKanjis
+            return await _context.UserKanji
                 .FirstOrDefaultAsync(uk => uk.UserId == userId && uk.KanjiId == kanjiId);
         }
 
@@ -105,7 +105,7 @@ namespace Infrastructure.Repositories
 
         public async Task<Kanji?> GetNextUnlearnedKanjiAsync(Guid userId, string sortBy, CancellationToken cancellationToken = default)
         {
-            var learnedKanjiIds = await _context.UserKanjis
+            var learnedKanjiIds = await _context.UserKanji
                 .Where(uk => uk.UserId == userId)
                 .Select(uk => uk.KanjiId)
                 .ToListAsync(cancellationToken);
@@ -128,9 +128,9 @@ namespace Infrastructure.Repositories
 
             return await query.FirstOrDefaultAsync(cancellationToken);
         }
-        public async Task<IReadOnlyList<UserKanji>> GetUserKanjisForUserDueAsync(Guid userId, DateTime date)
+        public async Task<IReadOnlyList<UserKanji>> GetUserKanjiForUserDueAsync(Guid userId, DateTime date)
         {
-            return await _context.UserKanjis
+            return await _context.UserKanji
                 .Include(uk => uk.Kanji)
                 .Where(uk => uk.UserId == userId && uk.NextReviewDate <= date)
                 .ToListAsync();
@@ -138,12 +138,12 @@ namespace Infrastructure.Repositories
 
         public async Task AddAsync(UserKanji userKanji)
         {
-            await _context.UserKanjis.AddAsync(userKanji);
+            await _context.UserKanji.AddAsync(userKanji);
         }
 
         public async Task UpdateAsync(UserKanji userKanji)
         {
-            _context.UserKanjis.Update(userKanji);
+            _context.UserKanji.Update(userKanji);
         }
 
         public async Task SaveChangesAsync()

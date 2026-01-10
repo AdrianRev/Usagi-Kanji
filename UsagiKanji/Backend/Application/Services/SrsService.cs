@@ -27,7 +27,7 @@ namespace Application.Services
         public async Task<IReadOnlyList<UserKanjiDto>> GetDueKanjiAsync(Guid userId)
         {
             DateTime today = DateTime.UtcNow.Date;
-            var dueKanjis = await _kanjiRepository.GetUserKanjisForUserDueAsync(userId, today);
+            var dueKanjis = await _kanjiRepository.GetUserKanjiForUserDueAsync(userId, today);
 
             return dueKanjis.Select(uk => new UserKanjiDto
             {
