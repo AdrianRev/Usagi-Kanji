@@ -103,7 +103,7 @@ namespace Application.Services
             userKanji.EaseFactor = ease;
 
             if (quality < 3)
-                userKanji.NextReviewDate = today.AddDays(1);
+                userKanji.NextReviewDate = today;
             else
                 userKanji.NextReviewDate = today.AddDays(userKanji.Interval);
         }

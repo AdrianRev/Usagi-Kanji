@@ -362,5 +362,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Dictionary data
-Data/
 *.json
