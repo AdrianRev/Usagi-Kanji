@@ -14,11 +14,12 @@ namespace Infrastructure.Configurations
 
             builder.Property(r => r.Type)
                 .IsRequired()
+                .HasMaxLength(20)
                 .HasConversion(new EnumToStringConverter<ReadingType>());
 
             builder.Property(r => r.Value)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(100);
 
             builder.HasOne(r => r.Kanji)
                 .WithMany(k => k.Readings)

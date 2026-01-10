@@ -24,7 +24,7 @@ namespace Infrastructure.Configurations
                    .HasMaxLength(1000);
 
             builder.Property(uk => uk.Keyword)
-                   .HasMaxLength(200);
+                   .HasMaxLength(50);
 
             builder.Property(uk => uk.EaseFactor)
                    .HasDefaultValue(2.5);

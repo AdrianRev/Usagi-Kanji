@@ -12,7 +12,7 @@ namespace Infrastructure.Configurations
 
             builder.Property(m => m.Value)
                 .IsRequired()
-                .HasMaxLength(500);
+                .HasMaxLength(200);
 
             builder.HasOne(m => m.Kanji)
                 .WithMany(k => k.Meanings)

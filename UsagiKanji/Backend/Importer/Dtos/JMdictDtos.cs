@@ -25,13 +25,13 @@
         public string Text { get; set; } = string.Empty;
         public bool Common { get; set; }
         public List<string> Tags { get; set; } = new();
-        public List<string> AppliesToKanji { get; set; } = new();
+        public List<string> AppliesToKanjiForm { get; set; } = new();
     }
 
     public class SenseDto
     {
         public List<string> PartOfSpeech { get; set; } = new();
-        public List<string> AppliesToKanji { get; set; } = new();
+        public List<string> AppliesToKanjiForm { get; set; } = new();
         public List<string> AppliesToKana { get; set; } = new();
         public List<GlossDto> Gloss { get; set; } = new();
     }

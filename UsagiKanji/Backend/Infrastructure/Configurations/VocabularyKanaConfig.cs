@@ -14,9 +14,9 @@ namespace Infrastructure.Configurations
                    .IsRequired()
                    .HasMaxLength(100);
 
-            builder.Property(k => k.AppliesToKanji)
+            builder.Property(k => k.AppliesToKanjiForm)
                    .IsRequired()
-                   .HasMaxLength(200);
+                   .HasMaxLength(100);
         }
     }
 }

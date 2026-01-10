@@ -81,7 +81,7 @@ namespace Importer.Services
                         {
                             Text = kana.Text,
                             Common = kana.Common,
-                            AppliesToKanji = string.Join(',', kana.AppliesToKanji)
+                            AppliesToKanjiForm = string.Join(',', kana.AppliesToKanjiForm)
                         });
                     }
 

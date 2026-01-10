@@ -12,11 +12,11 @@ namespace Infrastructure.Configurations
 
             builder.Property(u => u.Username)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(20);
 
             builder.Property(u => u.Email)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(50);
 
             builder.Property(u => u.PasswordHash)
                 .IsRequired();

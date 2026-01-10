@@ -88,7 +88,7 @@ namespace Application.Services
                 {
                     var mainForm = v?.KanjiForms?.FirstOrDefault();
                     var kanaReadings = v?.KanaReadings?
-                        .Where(k => (k.AppliesToKanji == "*" || k.AppliesToKanji.Contains(kanji.Character))
+                        .Where(k => (k.AppliesToKanjiForm == "*" || k.AppliesToKanjiForm.Contains(kanji.Character))
                             && k.Common)
                         .Select(k => k.Text)
                         .ToList() ?? new List<string>();
@@ -169,7 +169,7 @@ namespace Application.Services
                 {
                     var mainForm = v?.KanjiForms?.FirstOrDefault();
                     var kanaReadings = v?.KanaReadings?
-                        .Where(k => (k.AppliesToKanji == "*" || k.AppliesToKanji.Contains(neighbor.Character)) && k.Common)
+                        .Where(k => (k.AppliesToKanjiForm == "*" || k.AppliesToKanjiForm.Contains(neighbor.Character)) && k.Common)
                         .Select(k => k.Text).ToList() ?? new List<string>();
                     return new VocabularyDto
                     {

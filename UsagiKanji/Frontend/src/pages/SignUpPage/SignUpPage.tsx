@@ -30,6 +30,7 @@ const SignUpPage: React.FC = () => {
     const validateUsername = (name: string): string | null => {
         if (!name) return "Username is required";
         if (name.length < 3) return "Username must be at least 3 characters long";
+        if (name.length > 20) return "Username cannot be longer than 20 characters long";
         if (!/^[a-zA-Z0-9_-]+$/.test(name))
             return "Username can only contain letters, numbers, _ and -";
         return null;
@@ -37,10 +38,11 @@ const SignUpPage: React.FC = () => {
 
     const validatePassword = (pwd: string): string | null => {
         const minLength = 8;
+        const maxLength = 50;
         const hasUpper = /[A-Z]/.test(pwd);
         const hasLower = /[a-z]/.test(pwd);
         const hasDigit = /\d/.test(pwd);
-
+        if (pwd.length > maxLength) return `Password cannot be longer than ${maxLength} characters long`;
         if (pwd.length < minLength) return `Password must be at least ${minLength} characters long`;
         if (!hasUpper) return "Password must contain at least one uppercase letter";
         if (!hasLower) return "Password must contain at least one lowercase letter";

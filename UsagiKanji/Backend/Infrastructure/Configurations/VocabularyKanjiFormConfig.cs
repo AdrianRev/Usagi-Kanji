@@ -12,7 +12,7 @@ namespace Infrastructure.Configurations
 
             builder.Property(kf => kf.Text)
                    .IsRequired()
-                   .HasMaxLength(200);
+                   .HasMaxLength(100);
 
             builder.HasMany(kf => kf.KanjiCharacters)
                     .WithOne(kc => kc.KanjiForm)
