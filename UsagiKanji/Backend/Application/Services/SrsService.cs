@@ -68,7 +68,7 @@ namespace Application.Services
             int quality = rating switch
             {
                 "Again" => 0,
-                "Hard" => 2,
+                "Hard" => 3,
                 "Good" => 4,
                 "Easy" => 5,
                 _ => 4
@@ -77,7 +77,7 @@ namespace Application.Services
             if (quality < 3)
             {
                 userKanji.Repetitions = 0;
-                userKanji.Interval = 1;
+                userKanji.Interval = 0;
                 userKanji.Lapses++;
             }
             else

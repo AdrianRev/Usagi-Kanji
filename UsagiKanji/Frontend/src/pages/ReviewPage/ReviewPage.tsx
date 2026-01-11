@@ -139,19 +139,24 @@ export default function ReviewPage() {
     return (
         <div className={styles.wrapper}>
             <div className={styles.header}>
-                <button
-                    onClick={endSession}
-                    disabled={isSubmitting}
-                    className={styles.endSessionBtn}
-                >
-                    {isSubmitting ? "Saving..." : "End Session"}
-                </button>
+                
+                <div className={styles.btn}>
+                    {history.length > 0 && (
+                        <button
+                            onClick={endSession}
+                            disabled={isSubmitting}
+                            className={styles.endSessionBtn}
+                        >
+                            {isSubmitting ? "Saving..." : "End Session"}
+                        </button>
+                    )}
+                </div>
                 <div className={styles.stats}>
                     <span>Remaining: {queue.length}</span>
                     <span>Again: {history.filter(h => h.rating === "Again").length}</span>
-                </div>
-                <div className={styles.stats}>
                     <span>Done: {history.length}</span>
+                </div>
+                <div className={styles.btn}>
                     {history.length > 0 && (
                         <button onClick={undo} className={styles.undoBtn}>
                             Undo (Ctrl+Z)
